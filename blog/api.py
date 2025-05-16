@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from .models import Notification, Post, Save_Post, Reacts, Share, Comment, Profile, User
 from .serializer import NotificationSerializer, PostListSerializer, ProfileSerializer, CommentSerializer
 from .mixins import NotificationMixin
@@ -290,7 +290,7 @@ class NotificationAPI(NotificationMixin, viewsets.ViewSet):
         return Response(status=status.HTTP_200_OK)
 
 class CreateProfileApi(APIView):
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
@@ -335,7 +335,7 @@ class CreateProfileApi(APIView):
             )
 
 class EditProfileApi(NotificationMixin, APIView):
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
     permission_classes = [IsAuthenticated]
 
     def put(self, request, *args, **kwargs):
@@ -388,7 +388,7 @@ class EditProfileApi(NotificationMixin, APIView):
         return self.put(request, *args, **kwargs)
 
 class PostEditApi(NotificationMixin, APIView):
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
     permission_classes = [IsAuthenticated]
 
     def get_post(self, post_id, user):

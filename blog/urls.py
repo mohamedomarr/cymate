@@ -10,6 +10,7 @@ from .api import (
     EditProfileApi,
     PostEditApi
 )
+from .views_fix import edit_profile, create_profile
 
 urlpatterns = [
     # Post related endpoints
@@ -28,7 +29,9 @@ urlpatterns = [
     # Profile related endpoints
     path('profile/<str:username>/', ProfileListApi.as_view(), name='profile-detail'),
     path('profile/create/', CreateProfileApi.as_view(), name='profile-create'),
+    path('profile-create/', create_profile, name='profile-create-fix'),
     path('profile/edit/', EditProfileApi.as_view(), name='profile-edit'),
+    path('profile-update/', edit_profile, name='profile-update'),
 
     # Notification endpoints
     path('notifications/', NotificationAPI.as_view({'get': 'list'}), name='notifications'),
