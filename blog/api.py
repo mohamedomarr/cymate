@@ -2,10 +2,9 @@ from rest_framework import generics, permissions, status, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
-from .models import Notification, Post, Save_Post, Reacts, Share, Comment, Profile
+from .models import Notification, Post, Save_Post, Reacts, Share, Comment, Profile, User
 from .serializer import NotificationSerializer, PostListSerializer, ProfileSerializer, CommentSerializer
 from .mixins import NotificationMixin
-from django.contrib.auth.models import User
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
@@ -17,7 +16,7 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 class PostInteractionViewSet(NotificationMixin, viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
-    
+
     def retrieve(self, request, pk=None):
         """Handle GET requests"""
         try:
@@ -26,17 +25,17 @@ class PostInteractionViewSet(NotificationMixin, viewsets.ViewSet):
             return Response(serializer.data)
         except Post.DoesNotExist:
             return Response(
-                {'error': 'Post not found'}, 
+                {'error': 'Post not found'},
                 status=status.HTTP_404_NOT_FOUND
             )
-    
+
     @action(detail=True, methods=['post'])
     def interact(self, request, pk=None):
         """Handle post interactions (react, share, save)"""
         try:
             action_type = request.data.get('action_type')
             react_type = request.data.get('react_type')
-            
+
             post = Post.objects.get(id=pk)
             user = request.user
 
@@ -48,12 +47,12 @@ class PostInteractionViewSet(NotificationMixin, viewsets.ViewSet):
                 return self._handle_save(user, post)
             else:
                 return Response(
-                    {'error': 'Invalid action type'}, 
+                    {'error': 'Invalid action type'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
         except Post.DoesNotExist:
             return Response(
-                {'error': 'Post not found'}, 
+                {'error': 'Post not found'},
                 status=status.HTTP_404_NOT_FOUND
             )
 
@@ -62,10 +61,10 @@ class PostInteractionViewSet(NotificationMixin, viewsets.ViewSet):
         """Handle post comments"""
         try:
             content = request.data.get('content')
-            
+
             if not content:
                 return Response(
-                    {'error': 'Comment content is required'}, 
+                    {'error': 'Comment content is required'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
@@ -82,7 +81,7 @@ class PostInteractionViewSet(NotificationMixin, viewsets.ViewSet):
             )
         except Post.DoesNotExist:
             return Response(
-                {'error': 'Post not found'}, 
+                {'error': 'Post not found'},
                 status=status.HTTP_404_NOT_FOUND
             )
 
@@ -93,7 +92,7 @@ class PostInteractionViewSet(NotificationMixin, viewsets.ViewSet):
                     {'error': 'Invalid reaction type'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-            
+
             react, created = Reacts.objects.get_or_create(
                 user=user,
                 post=post,
@@ -137,14 +136,22 @@ class PostListApi(NotificationMixin, generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = PostListSerializer
     pagination_class = StandardResultsSetPagination
-    
+
     def get_queryset(self):
         user = self.request.user
-        following_users = user.following.all()
-        return Post.objects.filter(author__in=following_users)\
-            .select_related('author')\
-            .prefetch_related('post_comment', 'post_react', 'post_share', 'post_save')\
-            .order_by('-created_at')
+        # Check if the user has a following attribute and it's not empty
+        if hasattr(user, 'following') and user.following.exists():
+            following_users = user.following.all()
+            return Post.objects.filter(author__in=following_users)\
+                .select_related('author')\
+                .prefetch_related('post_comment', 'post_react', 'post_share', 'post_save')\
+                .order_by('-created_at')
+        else:
+            # Return all posts if user has no followers
+            return Post.objects.all()\
+                .select_related('author')\
+                .prefetch_related('post_comment', 'post_react', 'post_share', 'post_save')\
+                .order_by('-created_at')
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -157,83 +164,112 @@ class PostListApi(NotificationMixin, generics.ListCreateAPIView):
             }
         return response
 
-class PostDetailApi(PostInteractionViewSet, NotificationMixin, generics.RetrieveAPIView):
+class PostDetailApi(NotificationMixin, viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = PostListSerializer
-    queryset = Post.objects.all()
 
-    def retrieve(self, request, *args, **kwargs):
-        response = super().retrieve(request, *args, **kwargs)
-        if not isinstance(response.data, dict):
-            response.data = {
-                'post': response.data
-            }
-        return response
+    def retrieve(self, request, pk=None):
+        try:
+            post = Post.objects.get(id=pk)
+            serializer = PostListSerializer(post, context={'request': request})
+            return Response({
+                'post': serializer.data
+            })
+        except Post.DoesNotExist:
+            return Response(
+                {'error': 'Post not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
-class PostSavedListApi(PostInteractionViewSet, NotificationMixin, generics.ListCreateAPIView):
+class PostSavedListApi(NotificationMixin, viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = PostListSerializer
-    
-    def get_queryset(self):
-        user = self.request.user
-        saved_posts = user.user_save.all() 
-        return Post.objects.filter(post_save__in=saved_posts).order_by('-created_at')
 
-    def list(self, request, *args, **kwargs):
-        response = super().list(request, *args, **kwargs)
-        if not isinstance(response.data, dict):
-            response.data = {
-                'saved_posts': response.data
-            }
-        return response
+    def list(self, request):
+        user = request.user
+        try:
+            if hasattr(user, 'user_save'):
+                saved_posts = user.user_save.all()
+                posts = Post.objects.filter(post_save__in=saved_posts).order_by('-created_at')
+                serializer = PostListSerializer(posts, many=True, context={'request': request})
+                return Response({
+                    'saved_posts': serializer.data
+                })
+            else:
+                return Response({
+                    'saved_posts': []
+                })
+        except Exception as e:
+            return Response({
+                'error': str(e),
+                'saved_posts': []
+            })
 
-class ProfileListApi(NotificationMixin, generics.RetrieveAPIView):
+class ProfileListApi(NotificationMixin, APIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = ProfileSerializer
-    queryset = User.objects.all()
-    lookup_field = 'username'
 
-    def retrieve(self, request, *args, **kwargs):
-        response = super().retrieve(request, *args, **kwargs)
-        user = self.get_object()
-        
-        user_posts = Post.objects.filter(author=user).order_by('-created_at')
-        posts_data = PostListSerializer(
-            user_posts, 
-            many=True, 
-            context={'request': request}
-        ).data
+    def get(self, request, username):
+        try:
+            user = User.objects.get(username=username)
+            profile = user.user_profile
 
-        is_following = request.user.following.filter(id=user.id).exists()
-        
-        response.data.update({
-            'posts': posts_data,
-            'is_following': is_following,
-        })
-        
-        return response
+            # Serialize profile data
+            profile_serializer = ProfileSerializer(profile)
+
+            # Get user posts
+            user_posts = Post.objects.filter(author=user).order_by('-created_at')
+            posts_data = PostListSerializer(
+                user_posts,
+                many=True,
+                context={'request': request}
+            ).data
+
+            # Check if the current user is following this user
+            is_following = False
+            if hasattr(request.user, 'follow'):
+                is_following = request.user.follow.filter(id=user.id).exists()
+
+            # Combine all data
+            response_data = profile_serializer.data
+            response_data.update({
+                'posts': posts_data,
+                'is_following': is_following,
+            })
+
+            return Response(response_data)
+
+        except User.DoesNotExist:
+            return Response(
+                {'error': 'User not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Profile.DoesNotExist:
+            return Response(
+                {'error': 'Profile not found for this user'},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
 # Add NotificationMixin to all your other API views
 
-class NotificationAPI(NotificationMixin, generics.ListAPIView):
+class NotificationAPI(NotificationMixin, viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = NotificationSerializer
-    
-    def get_queryset(self):
+
+    def list(self, request):
         """Get all unread notifications for current user"""
-        return Notification.objects.filter(
-            user=self.request.user,
+        notifications = Notification.objects.filter(
+            user=request.user,
             is_read=False
         )
+        serializer = NotificationSerializer(notifications, many=True)
+        return Response(serializer.data)
 
     @action(detail=True, methods=['post'])
-    def mark_read(self, request):
+    def mark_read(self, request, pk=None):
         """Mark specific notification as read"""
-        notification_id = request.data.get('notification_id')
-        
         try:
             notification = Notification.objects.select_for_update().get(
-                id=notification_id,
+                id=pk,
                 user=request.user
             )
             notification.delete()
@@ -378,14 +414,14 @@ class PostEditApi(NotificationMixin, APIView):
                 post.content = request.data['content']
             if 'post_type' in request.data:
                 post.post_type = request.data['post_type']
-            
+
             # Handle image update
             if 'image' in request.FILES:
                 # Delete old image if it exists
                 if post.image:
                     post.image.delete()
                 post.image = request.FILES['image']
-            
+
             # Handle tags if provided
             if 'tags' in request.data:
                 post.tags.clear()  # Remove existing tags
@@ -423,10 +459,10 @@ class PostEditApi(NotificationMixin, APIView):
             # Delete the image if it exists
             if post.image:
                 post.image.delete()
-            
+
             # Delete the post
             post.delete()
-            
+
             return Response(
                 {'message': 'Post deleted successfully'},
                 status=status.HTTP_204_NO_CONTENT

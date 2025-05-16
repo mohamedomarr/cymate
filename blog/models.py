@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from taggit.managers import TaggableManager
 from django.utils import timezone
 import datetime
-from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -26,12 +25,10 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
-    
     def get_followers_count(self):
-        return self.followers.count()
-    
+        return User.objects.filter(follow=self).count()
     def get_following_count(self):
-        return self.following.count()
+        return self.follow.count()
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_profile')
@@ -78,20 +75,16 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     trend = models.BooleanField(default=False) 
     tags = TaggableManager()  # Using TaggableManager for tagging 
-    
 
     def __str__(self):
         return self.title
     
     def get_comments_count(self):
         return self.post_comment.count()
-    
     def get_shares_count(self):
         return self.post_share.count()
-    
     def get_reacts_count(self):
         return self.post_react.count()
-    
     def get_saves_count(self):
         return self.post_save.count()
 
