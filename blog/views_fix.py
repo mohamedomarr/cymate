@@ -1,8 +1,9 @@
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes, parser_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from .models import Profile
 from .serializer import ProfileSerializer
 
@@ -11,6 +12,7 @@ print("views_fix.py is being imported!")
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
+@parser_classes([JSONParser, MultiPartParser, FormParser])
 def create_profile(request):
     """Create a new profile for the currently logged-in user"""
     try:
@@ -56,6 +58,7 @@ def create_profile(request):
 @api_view(['POST', 'PUT', 'PATCH'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
+@parser_classes([JSONParser, MultiPartParser, FormParser])
 def edit_profile(request):
     """Update the profile of the currently logged-in user"""
     try:

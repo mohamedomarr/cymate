@@ -21,14 +21,9 @@ class User(AbstractUser):
         help_text='Specific permissions for this user.',
         verbose_name='user permissions',
     )
-    follow = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='following')
 
     def __str__(self):
         return self.username
-    def get_followers_count(self):
-        return User.objects.filter(follow=self).count()
-    def get_following_count(self):
-        return self.follow.count()
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_profile')
@@ -73,12 +68,12 @@ class Post(models.Model):
     content = models.TextField(max_length=5000)
     image = models.ImageField(upload_to='posts', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    trend = models.BooleanField(default=False) 
-    tags = TaggableManager()  # Using TaggableManager for tagging 
+    trend = models.BooleanField(default=False)
+    tags = TaggableManager()  # Using TaggableManager for tagging
 
     def __str__(self):
         return self.title
-    
+
     def get_comments_count(self):
         return self.post_comment.count()
     def get_shares_count(self):
@@ -108,7 +103,7 @@ class Reacts(models.Model):
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_react')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_react')
-    react = react = models.CharField(max_length=10, choices=REACT_TYPES)
+    react = models.CharField(max_length=10, choices=REACT_TYPES)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -121,10 +116,10 @@ class Share(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_share')
     created_at = models.DateTimeField(auto_now_add=True)
 
-class Comment(models.Model): 
+class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_comment')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_comment')
-    content = models.TextField(max_length=2000) 
+    content = models.TextField(max_length=2000)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class Notification(models.Model):
@@ -132,7 +127,6 @@ class Notification(models.Model):
         ('like', 'Like'),
         ('comment', 'Comment'),
         ('share', 'Share'),
-        ('follow', 'Follow'),
         ('custom', 'Custom'),
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
@@ -172,6 +166,5 @@ class Notification(models.Model):
             'like': f"{sender.username} liked your post",
             'comment': f"{sender.username} commented on your post",
             'share': f"{sender.username} shared your post",
-            'follow': f"{sender.username} started following you",
         }
         return messages.get(notification_type, "You have a new notification")

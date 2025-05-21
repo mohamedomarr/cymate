@@ -24,24 +24,13 @@ class CustomLoginSerializer(LoginSerializer):
     password = serializers.CharField(write_only=True)
 
 class UserSerializer(serializers.ModelSerializer):
-    followers_count = serializers.SerializerMethodField()
-    following_count = serializers.SerializerMethodField()
-
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'followers_count', 'following_count']
-
-    def get_followers_count(self, obj):
-        return obj.get_followers_count()
-
-    def get_following_count(self, obj):
-        return obj.get_following_count()
+        fields = ['id', 'username', 'email']
 
 class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username')
     email = serializers.EmailField(source='user.email')
-    followers_count = serializers.SerializerMethodField()
-    following_count = serializers.SerializerMethodField()
     posts_count = serializers.SerializerMethodField()
 
     class Meta:
@@ -55,17 +44,9 @@ class ProfileSerializer(serializers.ModelSerializer):
             'years_of_experience',
             'profile_image',
             'phone_number',
-            'followers_count',
-            'following_count',
             'posts_count'
         ]
 
-    def get_followers_count(self, obj):
-        return obj.user.get_followers_count()
-
-    def get_following_count(self, obj):
-        return obj.user.get_following_count()
-    
     def get_posts_count(self, obj):
         return obj.user.user_posts.count()
 
@@ -102,12 +83,12 @@ class PostListSerializer(TaggitSerializer, serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = [
-            'id', 
+            'id',
             'author',
             'post_type',
-            'title', 
-            'content', 
-            'image', 
+            'title',
+            'content',
+            'image',
             'tags',
             'created_at',
             'trend',

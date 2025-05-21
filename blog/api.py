@@ -16,6 +16,7 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 class PostInteractionViewSet(NotificationMixin, viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
 
     def retrieve(self, request, pk=None):
         """Handle GET requests"""
@@ -134,24 +135,16 @@ class PostInteractionViewSet(NotificationMixin, viewsets.ViewSet):
 
 class PostListApi(NotificationMixin, generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
     serializer_class = PostListSerializer
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
-        user = self.request.user
-        # Check if the user has a following attribute and it's not empty
-        if hasattr(user, 'following') and user.following.exists():
-            following_users = user.following.all()
-            return Post.objects.filter(author__in=following_users)\
-                .select_related('author')\
-                .prefetch_related('post_comment', 'post_react', 'post_share', 'post_save')\
-                .order_by('-created_at')
-        else:
-            # Return all posts if user has no followers
-            return Post.objects.all()\
-                .select_related('author')\
-                .prefetch_related('post_comment', 'post_react', 'post_share', 'post_save')\
-                .order_by('-created_at')
+        # Return all posts
+        return Post.objects.all()\
+            .select_related('author')\
+            .prefetch_related('post_comment', 'post_react', 'post_share', 'post_save')\
+            .order_by('-created_at')
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -166,6 +159,7 @@ class PostListApi(NotificationMixin, generics.ListCreateAPIView):
 
 class PostDetailApi(NotificationMixin, viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
     serializer_class = PostListSerializer
 
     def retrieve(self, request, pk=None):
@@ -183,6 +177,7 @@ class PostDetailApi(NotificationMixin, viewsets.ViewSet):
 
 class PostSavedListApi(NotificationMixin, viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
     serializer_class = PostListSerializer
 
     def list(self, request):
@@ -207,6 +202,7 @@ class PostSavedListApi(NotificationMixin, viewsets.ViewSet):
 
 class ProfileListApi(NotificationMixin, APIView):
     permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
 
     def get(self, request, username):
         try:
@@ -224,16 +220,10 @@ class ProfileListApi(NotificationMixin, APIView):
                 context={'request': request}
             ).data
 
-            # Check if the current user is following this user
-            is_following = False
-            if hasattr(request.user, 'follow'):
-                is_following = request.user.follow.filter(id=user.id).exists()
-
             # Combine all data
             response_data = profile_serializer.data
             response_data.update({
                 'posts': posts_data,
-                'is_following': is_following,
             })
 
             return Response(response_data)
@@ -253,6 +243,7 @@ class ProfileListApi(NotificationMixin, APIView):
 
 class NotificationAPI(NotificationMixin, viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
     serializer_class = NotificationSerializer
 
     def list(self, request):
