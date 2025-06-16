@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'dj_rest_auth.registration',
     'blog',
     'taggit',
+    'corsheaders',
 ]
 
 # Site ID is required for registration
@@ -91,6 +92,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For developm
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -188,3 +190,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom User Model
 AUTH_USER_MODEL = 'blog.User'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3001",
+    "http://localhost:3000",
+    "http://localhost:3002",
+]
+

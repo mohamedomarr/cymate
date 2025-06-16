@@ -414,10 +414,20 @@ class PostEditApi(NotificationMixin, APIView):
                 post.image = request.FILES['image']
 
             # Handle tags if provided
+            # if 'tags' in request.data:
+            #     post.tags.clear()  # Remove existing tags
+            #     tags = request.data.get('tags', '').split(',')  # Expecting comma-separated tags
+            #     post.tags.add(*[tag.strip() for tag in tags if tag.strip()])
             if 'tags' in request.data:
                 post.tags.clear()  # Remove existing tags
-                tags = request.data.get('tags', '').split(',')  # Expecting comma-separated tags
-                post.tags.add(*[tag.strip() for tag in tags if tag.strip()])
+                tags_value = request.data.get('tags', '')
+                if isinstance(tags_value, list):
+                    tags = tags_value
+                elif isinstance(tags_value, str):
+                    tags = [tag.strip() for tag in tags_value.split(',') if tag.strip()]
+                else:
+                    tags = []
+                post.tags.add(*tags)
 
             # Save the updated post
             post.save()
