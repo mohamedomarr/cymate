@@ -10,7 +10,16 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+# Load environment variables from .env file
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # If python-dotenv is not installed, just continue
+    pass
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -95,16 +104,20 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
 }
 
+# Get email credentials from environment variables
+CYMATE_EMAIL_USERNAME = os.getenv('CYMATE_EMAIL_USERNAME')
+EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
+
 # Email settings for production
 EMAIL_BACKEND = 'blog.email_backend.CustomSMTPEmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465  # SSL port
 EMAIL_USE_SSL = True  # Use SSL instead of TLS
 EMAIL_USE_TLS = False
-EMAIL_HOST_USER = 'cymate@gmail.com' #Enter a legit email here
-EMAIL_HOST_PASSWORD = 'password' #Enter a legit password here
-DEFAULT_FROM_EMAIL = 'CyMate <cymate@gmail.com>' #Enter a legit email here
-SERVER_EMAIL = 'cymate@gmail.com' #Enter a legit email here
+EMAIL_HOST_USER = CYMATE_EMAIL_USERNAME
+EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
+DEFAULT_FROM_EMAIL = f"CyMate <{CYMATE_EMAIL_USERNAME}>"
+SERVER_EMAIL = CYMATE_EMAIL_USERNAME
 EMAIL_TIMEOUT = 60
 
 # Email verification settings

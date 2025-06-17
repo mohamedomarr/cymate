@@ -16,10 +16,10 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465  # SSL port
 EMAIL_USE_SSL = True  # Use SSL instead of TLS
 EMAIL_USE_TLS = False
-EMAIL_HOST_USER = 'cymate@gmail.com' #Enter a legit email here
+EMAIL_HOST_USER = 'cymateplatform@gmail.com' #Enter a legit email here
 EMAIL_HOST_PASSWORD = ''  # App-specific password
-DEFAULT_FROM_EMAIL = 'CyMate <cymate@gmail.com>' # an email
-SERVER_EMAIL = 'cymate@gmail.com'#Enter a legit email here
+DEFAULT_FROM_EMAIL = 'CyMate <cymateplatform@gmail.com>' # an email
+SERVER_EMAIL = 'cymateplatform@gmail.com'#Enter a legit email here
 EMAIL_TIMEOUT = 60
 ```
 
