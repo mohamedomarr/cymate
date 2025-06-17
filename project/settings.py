@@ -87,8 +87,29 @@ REST_USE_JWT = True
 JWT_AUTH_COOKIE = 'my-app-auth'
 JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
 
-# Email settings (for password reset)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
+# Simple JWT settings
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+}
+
+# Email settings for production
+EMAIL_BACKEND = 'blog.email_backend.CustomSMTPEmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465  # SSL port
+EMAIL_USE_SSL = True  # Use SSL instead of TLS
+EMAIL_USE_TLS = False
+EMAIL_HOST_USER = 'PayifyPayments@gmail.com'
+EMAIL_HOST_PASSWORD = 'wlzptszrzwovzdod'
+DEFAULT_FROM_EMAIL = 'CyMate <PayifyPayments@gmail.com>'
+SERVER_EMAIL = 'PayifyPayments@gmail.com'
+EMAIL_TIMEOUT = 60
+
+# Email verification settings
+EMAIL_VERIFICATION_FROM_NAME = 'CyMate Team'
+EMAIL_VERIFICATION_SUPPORT_EMAIL = 'PayifyPayments@gmail.com'
 
 
 MIDDLEWARE = [
@@ -115,7 +136,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

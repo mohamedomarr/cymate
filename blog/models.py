@@ -168,3 +168,41 @@ class Notification(models.Model):
             'share': f"{sender.username} shared your post",
         }
         return messages.get(notification_type, "You have a new notification")
+
+class EmailVerification(models.Model):
+    VERIFICATION_TYPES = (
+        ('registration', 'Registration'),
+        ('password_reset', 'Password Reset'),
+    )
+    
+    email = models.EmailField()
+    code = models.CharField(max_length=6)
+    verification_type = models.CharField(max_length=20, choices=VERIFICATION_TYPES)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='email_verifications')
+    is_used = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['email', 'code', 'verification_type']),
+            models.Index(fields=['created_at']),
+        ]
+    
+    def is_expired(self):
+        """Check if the verification code has expired"""
+        return timezone.now() > self.expires_at
+    
+    def is_valid(self):
+        """Check if the verification code is valid (not used and not expired)"""
+        return not self.is_used and not self.is_expired()
+    
+    @classmethod
+    def cleanup_expired_codes(cls, hours=24):
+        """Delete expired verification codes older than specified hours"""
+        cutoff_date = timezone.now() - datetime.timedelta(hours=hours)
+        cls.objects.filter(expires_at__lt=cutoff_date).delete()
+    
+    def __str__(self):
+        return f"{self.email} - {self.verification_type} - {self.code}"

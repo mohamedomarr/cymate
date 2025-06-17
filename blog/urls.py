@@ -11,6 +11,10 @@ from .api import (
     PostEditApi
 )
 from .views_fix import edit_profile, create_profile
+from .enhanced_registration_views import (
+    EnhancedRegistrationView,
+    PreRegistrationEmailVerificationView
+)
 
 urlpatterns = [
     # Post related endpoints
@@ -37,4 +41,8 @@ urlpatterns = [
     path('notifications/', NotificationAPI.as_view({'get': 'list'}), name='notifications'),
     path('notifications/<int:pk>/mark-read/', NotificationAPI.as_view({'post': 'mark_read'}), name='mark-notification-read'),
     path('notifications/mark-all-read/', NotificationAPI.as_view({'post': 'mark_all_read'}), name='mark-all-notifications-read'),
+    
+    # Enhanced registration endpoints
+    path('auth/enhanced-registration/', EnhancedRegistrationView.as_view(), name='enhanced-registration'),
+    path('auth/pre-registration-verify/', PreRegistrationEmailVerificationView.as_view(), name='pre-registration-verify'),
 ]

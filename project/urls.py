@@ -32,4 +32,7 @@ urlpatterns = [
     
     # Blog app URLs
     path('api/', include('blog.urls')),  # Changed to prefix with 'api/'
+    
+    # Email verification URLs
+    path('api/email-verification/', include('blog.email_verification_urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

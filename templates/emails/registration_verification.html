@@ -1,0 +1,39 @@
+{% extends "emails/base_email.html" %}
+
+{% block title %}Verify Your Email - CyMate{% endblock %}
+
+{% block header_title %}Welcome to CyMate!{% endblock %}
+{% block header_subtitle %}Let's verify your email address{% endblock %}
+
+{% block content %}
+    <h2>🎉 Welcome to the CyMate Community!</h2>
+    
+    <p>Hi{% if user.first_name %} {{ user.first_name }}{% endif %}!</p>
+    
+    <p>Thank you for joining CyMate! We're excited to have you as part of our growing community of creators, thinkers, and innovators.</p>
+    
+    <p>To complete your registration and start connecting with others, please verify your email address using the code below:</p>
+    
+    <div class="verification-code">
+        {{ code }}
+    </div>
+    
+    <div class="info-box">
+        <p><strong>⏰ This code will expire in {{ expiry_minutes }} minutes</strong></p>
+        <p>Enter this code in the verification form to activate your account.</p>
+    </div>
+    
+    <p>Once verified, you'll be able to:</p>
+    <ul style="color: #555555; font-size: 16px; line-height: 1.6;">
+        <li>📝 Create and share posts</li>
+        <li>💬 Comment and interact with the community</li>
+        <li>👤 Build your professional profile</li>
+        <li>🔔 Receive notifications about your content</li>
+        <li>📚 Discover amazing content from other users</li>
+    </ul>
+    
+    <p>If you didn't create an account with us, please ignore this email and no account will be created.</p>
+    
+    <p>Welcome aboard!<br>
+    <strong>The CyMate Team</strong></p>
+{% endblock %} 

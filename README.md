@@ -4,6 +4,79 @@
 
 CyMate is a full-featured blog and social platform built with Django and Django REST Framework. It enables users to create, share, and interact with posts, manage profiles, and receive notifications.
 
+## 🔐 Email Verification System
+
+This project includes a comprehensive email verification system that supports both user registration and password reset workflows.
+
+### ✨ Key Features
+
+- **Secure 6-digit verification codes** with 15-minute expiration
+- **Two verification types**: Registration and Password Reset
+- **Code reuse prevention** - codes are marked as used after verification
+- **Automatic cleanup** of expired codes
+- **Email integration** with customizable templates
+- **RESTful API endpoints** with comprehensive validation
+- **Token-based password reset** with time-limited tokens
+- **Management commands** for maintenance
+
+### 🚀 Email Verification API Endpoints
+
+#### Send Verification Code
+```http
+POST /api/email-verification/send-code/
+Content-Type: application/json
+
+{
+    "email": "user@example.com",
+    "verification_type": "registration"  // or "password_reset"
+}
+```
+
+#### Verify Code
+```http
+POST /api/email-verification/verify-code/
+Content-Type: application/json
+
+{
+    "email": "user@example.com",
+    "code": "123456",
+    "verification_type": "registration"
+}
+```
+
+#### Enhanced Registration (with email verification)
+```http
+POST /api/auth/enhanced-registration/
+Content-Type: application/json
+
+{
+    "username": "newuser",
+    "email": "newuser@example.com",
+    "password1": "securepass123",
+    "password2": "securepass123",
+    "verification_code": "123456"
+}
+```
+
+#### Password Reset Workflow
+1. Send verification code: `POST /api/email-verification/send-code/`
+2. Verify code and get token: `POST /api/email-verification/verify-code/`
+3. Reset password: `POST /api/email-verification/reset-password-confirm/`
+
+### 🧪 Testing the Email Verification System
+
+Run the included demo script to test all functionality:
+```bash
+python test_email_verification_demo.py
+```
+
+### 🔧 Management Commands
+
+Cleanup expired verification codes:
+```bash
+python manage.py cleanup_verification_codes --hours 24
+```
+
 ## Setup Guide
 
 ### Prerequisites

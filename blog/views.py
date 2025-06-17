@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializer import UserSerializer, ProfileSerializer, NotificationSerializer  # Updated import
+from .serializers import UserProfileSerializer, NotificationSerializer  # Fixed import
 from .models import User, Profile, Notification
 
 # Create your views here.
@@ -39,38 +39,9 @@ def update_user_profile(request):
             status=status.HTTP_404_NOT_FOUND
         )
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def follow_user(request, user_id):
-    """Follow a user"""
-    try:
-        user_to_follow = User.objects.get(id=user_id)
-        if request.user != user_to_follow:
-            request.user.following.add(user_to_follow)
-            return Response({'status': 'User followed successfully'})
-        return Response(
-            {'error': 'You cannot follow yourself'}, 
-            status=status.HTTP_400_BAD_REQUEST
-        )
-    except User.DoesNotExist:
-        return Response(
-            {'error': 'User not found'}, 
-            status=status.HTTP_404_NOT_FOUND
-        )
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def unfollow_user(request, user_id):
-    """Unfollow a user"""
-    try:
-        user_to_unfollow = User.objects.get(id=user_id)
-        request.user.following.remove(user_to_unfollow)
-        return Response({'status': 'User unfollowed successfully'})
-    except User.DoesNotExist:
-        return Response(
-            {'error': 'User not found'}, 
-            status=status.HTTP_404_NOT_FOUND
-        )
+# Follow functionality removed due to migration 0005_remove_follow_field
+# This functionality would need to be re-implemented with a proper Follow model
+# if needed in the future
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
