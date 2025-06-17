@@ -26,29 +26,56 @@ class CustomLoginSerializer(LoginSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name']
 
 class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username')
     email = serializers.EmailField(source='user.email')
+    first_name = serializers.CharField(source='user.first_name', read_only=True)
+    last_name = serializers.CharField(source='user.last_name', read_only=True)
     posts_count = serializers.SerializerMethodField()
+    profile_picture = serializers.ImageField(source='profile_image', required=False)  # Alias for API consistency
 
     class Meta:
         model = Profile
         fields = [
             'username',
             'email',
+            'first_name',
+            'last_name',
             'job_title',
             'job_status',
             'brief',
             'years_of_experience',
             'profile_image',
+            'profile_picture',  # Alias field
             'phone_number',
             'posts_count'
         ]
 
     def get_posts_count(self, obj):
         return obj.user.user_posts.count()
+    
+    def validate_profile_image(self, value):
+        """Validate profile image upload"""
+        if value:
+            # Check file size (max 5MB)
+            max_size = 5 * 1024 * 1024  # 5MB
+            if value.size > max_size:
+                raise serializers.ValidationError("Profile image size cannot exceed 5MB.")
+            
+            # Check file type
+            allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif']
+            if value.content_type not in allowed_types:
+                raise serializers.ValidationError(
+                    "Only JPEG, PNG and GIF image formats are allowed."
+                )
+        
+        return value
+    
+    def validate_profile_picture(self, value):
+        """Validate profile picture upload (alias for profile_image)"""
+        return self.validate_profile_image(value)
 
 class NotificationSerializer(serializers.ModelSerializer):
     sender = serializers.StringRelatedField()
@@ -156,6 +183,8 @@ class SavePostSerializer(serializers.ModelSerializer):
         read_only_fields = ['created_at']
 
 class CreateProfileSerializer(serializers.ModelSerializer):
+    profile_picture = serializers.ImageField(source='profile_image', required=False)  # Alias for API consistency
+    
     class Meta:
         model = Profile
         fields = [
@@ -164,6 +193,28 @@ class CreateProfileSerializer(serializers.ModelSerializer):
             'brief',
             'years_of_experience',
             'profile_image',
+            'profile_picture',  # Alias field
             'phone_number',
         ]
+    
+    def validate_profile_image(self, value):
+        """Validate profile image upload"""
+        if value:
+            # Check file size (max 5MB)
+            max_size = 5 * 1024 * 1024  # 5MB
+            if value.size > max_size:
+                raise serializers.ValidationError("Profile image size cannot exceed 5MB.")
+            
+            # Check file type
+            allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif']
+            if value.content_type not in allowed_types:
+                raise serializers.ValidationError(
+                    "Only JPEG, PNG and GIF image formats are allowed."
+                )
+        
+        return value
+    
+    def validate_profile_picture(self, value):
+        """Validate profile picture upload (alias for profile_image)"""
+        return self.validate_profile_image(value)
 

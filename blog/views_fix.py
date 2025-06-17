@@ -32,9 +32,11 @@ def create_profile(request):
             'phone_number': request.data.get('phone_number', ''),
         }
 
-        # Handle profile image if provided
+        # Handle profile image if provided (supporting both field names)
         if 'profile_image' in request.FILES:
             profile_data['profile_image'] = request.FILES['profile_image']
+        elif 'profile_picture' in request.FILES:
+            profile_data['profile_image'] = request.FILES['profile_picture']
 
         # Create profile
         profile = Profile.objects.create(
@@ -71,6 +73,18 @@ def edit_profile(request):
 
         profile = request.user.user_profile
 
+        # Update user fields (first_name, last_name)
+        user_updated = False
+        if 'first_name' in request.data:
+            request.user.first_name = request.data['first_name']
+            user_updated = True
+        if 'last_name' in request.data:
+            request.user.last_name = request.data['last_name']
+            user_updated = True
+        
+        if user_updated:
+            request.user.save()
+
         # Update profile data
         if 'job_title' in request.data:
             profile.job_title = request.data['job_title']
@@ -83,12 +97,18 @@ def edit_profile(request):
         if 'phone_number' in request.data:
             profile.phone_number = request.data['phone_number']
 
-        # Handle profile image update
+        # Handle profile image update (supporting both profile_image and profile_picture field names)
+        profile_image_key = None
         if 'profile_image' in request.FILES:
+            profile_image_key = 'profile_image'
+        elif 'profile_picture' in request.FILES:
+            profile_image_key = 'profile_picture'
+        
+        if profile_image_key:
             # Delete old image if it exists
             if profile.profile_image:
                 profile.profile_image.delete()
-            profile.profile_image = request.FILES['profile_image']
+            profile.profile_image = request.FILES[profile_image_key]
 
         # Save the updated profile
         profile.save()
