@@ -287,9 +287,31 @@ python manage.py runserver
 }
 ```
 
-- **Available react_types**: `like`, `love`, `haha`, `sad`, `angry` 
-  (Note: The `wow` type is listed in the documentation but not implemented in the model)
-- **Response**: Returns updated post details
+- **Available react_types**: `Love`, `Dislike`, `Thunder`
+- **Response**: Returns updated post details with reaction breakdown
+
+**Example Response:**
+```json
+{
+  "id": 1,
+  "title": "Sample Post",
+  "reactions": {
+    "Love": 4,
+    "Dislike": 1,
+    "Thunder": 2
+  },
+  "comments": [
+    {
+      "id": 1,
+      "user": "john_doe",
+      "first_name": "John",
+      "last_name": "Doe",
+      "content": "Great post!",
+      "created_at": "2024-01-15T10:30:00Z"
+    }
+  ]
+}
+```
 
 - **Method**: POST
 - **Description**: Save a post
@@ -354,6 +376,27 @@ python manage.py runserver
 ```
 
 - **Response**: Returns updated post details
+
+#### 2.7 Delete a Post
+
+- **URL**: `http://127.0.0.1:8000/api/posts/{post_id}/edit/`
+- **Method**: DELETE
+- **Description**: Delete a post (available to post owner or admin)
+- **Permissions**:
+  - Post owner can delete their own posts
+  - Admin/superuser can delete any post
+  - Other users receive 404 error
+- **Response**: 204 No Content on success
+
+#### 2.8 Filter Posts by Tags
+
+- **URL**: `http://127.0.0.1:8000/api/posts/?tags={tag_names}`
+- **Method**: GET
+- **Description**: Filter posts by one or more tags
+- **Examples**:
+  - Single tag: `?tags=technology`
+  - Multiple tags: `?tags=technology,python,django`
+- **Response**: Returns posts that match any of the specified tags
 
 ### 3. Profile Management Endpoints
 
@@ -513,9 +556,17 @@ curl -X POST http://127.0.0.1:8000/api/posts/ \
 
 ## Known Issues and Solutions
 
-1. **React Types Inconsistency**: The documentation mentions a `wow` reaction type, but this is not implemented in the model. The available reaction types are: `like`, `love`, `haha`, `sad`, and `angry`.
+1. **✅ FIXED - React Types**: Reaction types have been standardized to three values: `Love`, `Dislike`, and `Thunder`. All validation and API endpoints have been updated.
 
-2. **Profile URL Inconsistency**: There are two URLs for profile creation:
+2. **✅ FIXED - Tag Filtering**: The tag filtering bug has been resolved. Posts can now be properly filtered by tags using the `?tags=` query parameter.
+
+3. **✅ ENHANCED - Comments**: Comments now include `first_name` and `last_name` of the commenting user in API responses.
+
+4. **✅ ENHANCED - Post Deletion**: Post deletion now supports admin permissions in addition to owner permissions.
+
+5. **✅ ENHANCED - Reaction Data**: Post responses now include detailed reaction breakdown instead of simple count.
+
+6. **Profile URL Inconsistency**: There are two URLs for profile creation:
    - `/api/profile/create/` - The standard endpoint
    - `/api/profile-create/` - An alternate endpoint
    

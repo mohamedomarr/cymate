@@ -88,10 +88,12 @@ class NotificationSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
+    first_name = serializers.CharField(source='user.first_name', read_only=True)
+    last_name = serializers.CharField(source='user.last_name', read_only=True)
 
     class Meta:
         model = Comment
-        fields = ['id', 'user', 'content', 'created_at']
+        fields = ['id', 'user', 'first_name', 'last_name', 'content', 'created_at']
         read_only_fields = ['created_at']
 
 class PostListSerializer(TaggitSerializer, serializers.ModelSerializer):
@@ -99,7 +101,7 @@ class PostListSerializer(TaggitSerializer, serializers.ModelSerializer):
     tags = TagListSerializerField()
     comments_count = serializers.SerializerMethodField()
     shares_count = serializers.SerializerMethodField()
-    reacts_count = serializers.SerializerMethodField()
+    reactions = serializers.SerializerMethodField()
     saves_count = serializers.SerializerMethodField()
     comments = CommentSerializer(source='post_comment', many=True, read_only=True)
     # Add new fields for interaction status
@@ -121,7 +123,7 @@ class PostListSerializer(TaggitSerializer, serializers.ModelSerializer):
             'trend',
             'comments_count',
             'shares_count',
-            'reacts_count',
+            'reactions',
             'saves_count',
             'comments',
             'user_reaction',
@@ -136,14 +138,16 @@ class PostListSerializer(TaggitSerializer, serializers.ModelSerializer):
     def get_shares_count(self, obj):
         return obj.get_shares_count()
 
-    def get_reacts_count(self, obj):
-        return obj.get_reacts_count()
+    def get_reactions(self, obj):
+        return obj.get_reactions_breakdown()
 
     def get_saves_count(self, obj):
         return obj.get_saves_count()
 
     def get_user_reaction(self, obj):
         user = self.context.get('request').user
+        if not user or not user.is_authenticated:
+            return None
         try:
             reaction = obj.post_react.get(user=user)
             return reaction.react
@@ -152,10 +156,14 @@ class PostListSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     def get_is_shared(self, obj):
         user = self.context.get('request').user
+        if not user or not user.is_authenticated:
+            return False
         return obj.post_share.filter(user=user).exists()
 
     def get_is_saved(self, obj):
         user = self.context.get('request').user
+        if not user or not user.is_authenticated:
+            return False
         return obj.post_save.filter(user=user).exists()
 
 class ReactSerializer(serializers.ModelSerializer):
@@ -165,6 +173,15 @@ class ReactSerializer(serializers.ModelSerializer):
         model = Reacts
         fields = ['id', 'user', 'post', 'react', 'created_at']
         read_only_fields = ['created_at']
+    
+    def validate_react(self, value):
+        """Validate reaction type"""
+        valid_reactions = ['Love', 'Dislike', 'Thunder']
+        if value not in valid_reactions:
+            raise serializers.ValidationError(
+                f"Invalid reaction type. Must be one of: {', '.join(valid_reactions)}"
+            )
+        return value
 
 class ShareSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()

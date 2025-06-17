@@ -16,10 +16,10 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465  # SSL port
 EMAIL_USE_SSL = True  # Use SSL instead of TLS
 EMAIL_USE_TLS = False
-EMAIL_HOST_USER = 'PayifyPayments@gmail.com'
-EMAIL_HOST_PASSWORD = 'wlzptszrzwovzdod'  # App-specific password
-DEFAULT_FROM_EMAIL = 'CyMate <PayifyPayments@gmail.com>'
-SERVER_EMAIL = 'PayifyPayments@gmail.com'
+EMAIL_HOST_USER = 'cymate@gmail.com' #Enter a legit email here
+EMAIL_HOST_PASSWORD = ''  # App-specific password
+DEFAULT_FROM_EMAIL = 'CyMate <cymate@gmail.com>' # an email
+SERVER_EMAIL = 'cymate@gmail.com'#Enter a legit email here
 EMAIL_TIMEOUT = 60
 ```
 
@@ -173,8 +173,8 @@ For production deployment, move sensitive data to environment variables:
 
 ```python
 import os
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'PayifyPayments@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'wlzptszrzwovzdod')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'email@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'password')
 ```
 
 ### SSL/TLS Configuration
@@ -207,7 +207,7 @@ For high-volume applications, consider:
 ## 📞 Support
 
 ### Contact Information
-- **Support Email**: PayifyPayments@gmail.com
+- **Support Email**: cymate@gmail.com
 - **Technical Issues**: Check application logs
 - **Email Delivery Issues**: Monitor Gmail account dashboard
 

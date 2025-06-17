@@ -88,9 +88,9 @@ class PostInteractionViewSet(NotificationMixin, viewsets.ViewSet):
 
     def _handle_react(self, user, post, react_type):
         try:
-            if react_type not in ['like', 'love', 'haha', 'wow', 'sad', 'angry']:
+            if react_type not in ['Love', 'Dislike', 'Thunder']:
                 return Response(
-                    {'error': 'Invalid reaction type'},
+                    {'error': 'Invalid reaction type. Must be one of: Love, Dislike, Thunder'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
@@ -140,11 +140,20 @@ class PostListApi(NotificationMixin, generics.ListCreateAPIView):
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
-        # Return all posts
-        return Post.objects.all()\
+        queryset = Post.objects.all()\
             .select_related('author')\
             .prefetch_related('post_comment', 'post_react', 'post_share', 'post_save')\
             .order_by('-created_at')
+        
+        # Filter by tags if provided
+        tags = self.request.query_params.get('tags', None)
+        if tags:
+            # Support both single tag and comma-separated tags
+            tag_list = [tag.strip() for tag in tags.split(',') if tag.strip()]
+            if tag_list:
+                queryset = queryset.filter(tags__name__in=tag_list).distinct()
+        
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -404,8 +413,11 @@ class PostEditApi(NotificationMixin, APIView):
 
     def get_post(self, post_id, user):
         try:
-            # Get post and verify ownership
-            return Post.objects.get(id=post_id, author=user)
+            # Get post and verify ownership or admin status
+            post = Post.objects.get(id=post_id)
+            if post.author == user or user.is_superuser:
+                return post
+            return None
         except Post.DoesNotExist:
             return None
 
@@ -415,6 +427,13 @@ class PostEditApi(NotificationMixin, APIView):
             return Response(
                 {'error': 'Post not found or you do not have permission to edit this post'},
                 status=status.HTTP_404_NOT_FOUND
+            )
+        
+        # Only allow owner to edit (not admin)
+        if post.author != request.user:
+            return Response(
+                {'error': 'Only the post owner can edit this post'},
+                status=status.HTTP_403_FORBIDDEN
             )
 
         try:
@@ -434,10 +453,6 @@ class PostEditApi(NotificationMixin, APIView):
                 post.image = request.FILES['image']
 
             # Handle tags if provided
-            # if 'tags' in request.data:
-            #     post.tags.clear()  # Remove existing tags
-            #     tags = request.data.get('tags', '').split(',')  # Expecting comma-separated tags
-            #     post.tags.add(*[tag.strip() for tag in tags if tag.strip()])
             if 'tags' in request.data:
                 post.tags.clear()  # Remove existing tags
                 tags_value = request.data.get('tags', '')

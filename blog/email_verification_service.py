@@ -101,7 +101,7 @@ class EmailVerificationService:
                 'user': user,
                 'expiry_minutes': cls.CODE_EXPIRY_MINUTES,
                 'verification_type': verification_type,
-                'support_email': getattr(settings, 'EMAIL_VERIFICATION_SUPPORT_EMAIL', 'PayifyPayments@gmail.com'),
+                'support_email': getattr(settings, 'EMAIL_VERIFICATION_SUPPORT_EMAIL', 'cymate@gmail.com'),
             }
             
             # Render HTML content
@@ -157,7 +157,7 @@ This email was sent to {email}. If you have any questions, contact us at {contex
             msg = EmailMultiAlternatives(
                 subject=subject,
                 body=text_content,
-                from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'CyMate <PayifyPayments@gmail.com>'),
+                from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'CyMate <cymate@gmail.com>'),
                 to=[email]
             )
             
@@ -177,7 +177,7 @@ This email was sent to {email}. If you have any questions, contact us at {contex
                 send_mail(
                     subject=subject,
                     message=text_content,
-                    from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'CyMate <PayifyPayments@gmail.com>'),
+                    from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'CyMate <cymate@gmail.com>'),
                     recipient_list=[email],
                     fail_silently=False,
                     html_message=html_content

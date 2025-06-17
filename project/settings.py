@@ -101,15 +101,15 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465  # SSL port
 EMAIL_USE_SSL = True  # Use SSL instead of TLS
 EMAIL_USE_TLS = False
-EMAIL_HOST_USER = 'PayifyPayments@gmail.com'
-EMAIL_HOST_PASSWORD = 'wlzptszrzwovzdod'
-DEFAULT_FROM_EMAIL = 'CyMate <PayifyPayments@gmail.com>'
-SERVER_EMAIL = 'PayifyPayments@gmail.com'
+EMAIL_HOST_USER = 'cymate@gmail.com' #Enter a legit email here
+EMAIL_HOST_PASSWORD = 'password' #Enter a legit password here
+DEFAULT_FROM_EMAIL = 'CyMate <cymate@gmail.com>' #Enter a legit email here
+SERVER_EMAIL = 'cymate@gmail.com' #Enter a legit email here
 EMAIL_TIMEOUT = 60
 
 # Email verification settings
 EMAIL_VERIFICATION_FROM_NAME = 'CyMate Team'
-EMAIL_VERIFICATION_SUPPORT_EMAIL = 'PayifyPayments@gmail.com'
+EMAIL_VERIFICATION_SUPPORT_EMAIL = 'cymate@gmail.com'
 
 
 MIDDLEWARE = [

@@ -5,6 +5,7 @@ from django.utils import timezone
 import datetime
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.db.models import Count
 
 class User(AbstractUser):
     groups = models.ManyToManyField(
@@ -82,6 +83,14 @@ class Post(models.Model):
         return self.post_react.count()
     def get_saves_count(self):
         return self.post_save.count()
+    
+    def get_reactions_breakdown(self):
+        """Get reactions count broken down by reaction type"""
+        reactions = self.post_react.values('react').annotate(count=Count('react'))
+        breakdown = {'Love': 0, 'Dislike': 0, 'Thunder': 0}
+        for reaction in reactions:
+            breakdown[reaction['react']] = reaction['count']
+        return breakdown
 
 
 class Save_Post(models.Model):
@@ -95,11 +104,9 @@ class Save_Post(models.Model):
 
 class Reacts(models.Model):
     REACT_TYPES = (
-        ('love', 'Love'),
-        ('like', 'Like'),
-        ('angry', 'Angry'),
-        ('sad', 'Sad'),
-        ('haha', 'Haha'),
+        ('Love', 'Love'),
+        ('Dislike', 'Dislike'), 
+        ('Thunder', 'Thunder'),
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_react')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_react')

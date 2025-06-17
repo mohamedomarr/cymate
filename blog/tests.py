@@ -8,7 +8,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from PIL import Image
 import io
 import tempfile
-from .models import Profile
+from .models import Profile, Post, Comment, Reacts
+import json
 
 User = get_user_model()
 
@@ -384,3 +385,367 @@ class AuthenticationIntegrationTests(APITestCase):
         self.assertEqual(user.first_name, 'Final')
         self.assertEqual(user.last_name, 'Name')
         self.assertEqual(user.user_profile.job_title, 'Senior Developer')
+
+
+class UserCreationTest(TestCase):
+    def test_create_user(self):
+        user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123',
+            first_name='Test',
+            last_name='User'
+        )
+        self.assertEqual(user.username, 'testuser')
+        self.assertEqual(user.email, 'test@example.com')
+        self.assertEqual(user.first_name, 'Test')
+        self.assertEqual(user.last_name, 'User')
+        self.assertTrue(user.check_password('testpass123'))
+
+
+class ProfileModelTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123'
+        )
+
+    def test_profile_creation(self):
+        """Test that a profile is automatically created when a user is created"""
+        self.assertTrue(hasattr(self.user, 'user_profile'))
+        self.assertIsInstance(self.user.user_profile, Profile)
+
+    def test_profile_str_method(self):
+        """Test the string representation of Profile"""
+        expected = f"{self.user.username}'s Profile"
+        self.assertEqual(str(self.user.user_profile), expected)
+
+
+class CommentEnhancementTests(APITestCase):
+    
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123',
+            first_name='John',
+            last_name='Doe'
+        )
+        self.token = Token.objects.create(user=self.user)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        
+        self.post = Post.objects.create(
+            title='Test Post',
+            content='Test content',
+            author=self.user,
+            post_type='post'
+        )
+    
+    def test_comment_includes_user_names(self):
+        """Test that comments include first_name and last_name"""
+        comment = Comment.objects.create(
+            user=self.user,
+            post=self.post,
+            content='Test comment'
+        )
+        
+        url = reverse('post-detail', kwargs={'pk': self.post.id})
+        response = self.client.get(url)
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        post_data = response.data['post']
+        self.assertEqual(len(post_data['comments']), 1)
+        
+        comment_data = post_data['comments'][0]
+        self.assertEqual(comment_data['first_name'], 'John')
+        self.assertEqual(comment_data['last_name'], 'Doe')
+        self.assertEqual(comment_data['user'], 'testuser')
+        self.assertEqual(comment_data['content'], 'Test comment')
+
+
+class PostDeletionTests(APITestCase):
+    
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123'
+        )
+        self.admin_user = User.objects.create_superuser(
+            username='admin',
+            email='admin@example.com',
+            password='adminpass123'
+        )
+        self.other_user = User.objects.create_user(
+            username='otheruser',
+            email='other@example.com',
+            password='otherpass123'
+        )
+        
+        self.user_token = Token.objects.create(user=self.user)
+        self.admin_token = Token.objects.create(user=self.admin_user)
+        self.other_token = Token.objects.create(user=self.other_user)
+        
+        self.post = Post.objects.create(
+            title='Test Post',
+            content='Test content',
+            author=self.user,
+            post_type='post'
+        )
+    
+    def test_owner_can_delete_post(self):
+        """Test that post owner can delete their post"""
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_token.key)
+        
+        url = reverse('post-edit', kwargs={'post_id': self.post.id})
+        response = self.client.delete(url)
+        
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Post.objects.filter(id=self.post.id).exists())
+    
+    def test_admin_can_delete_post(self):
+        """Test that admin can delete any post"""
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.admin_token.key)
+        
+        url = reverse('post-edit', kwargs={'post_id': self.post.id})
+        response = self.client.delete(url)
+        
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Post.objects.filter(id=self.post.id).exists())
+    
+    def test_non_owner_cannot_delete_post(self):
+        """Test that non-owner cannot delete post"""
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.other_token.key)
+        
+        url = reverse('post-edit', kwargs={'post_id': self.post.id})
+        response = self.client.delete(url)
+        
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertTrue(Post.objects.filter(id=self.post.id).exists())
+
+
+class TagFilteringTests(APITestCase):
+    
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123'
+        )
+        self.token = Token.objects.create(user=self.user)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        
+        # Create posts with different tags
+        self.post1 = Post.objects.create(
+            title='Tech Post',
+            content='Tech content',
+            author=self.user,
+            post_type='post'
+        )
+        self.post1.tags.add('technology', 'python')
+        
+        self.post2 = Post.objects.create(
+            title='AI Post',
+            content='AI content',
+            author=self.user,
+            post_type='blog'
+        )
+        self.post2.tags.add('ai', 'technology')
+        
+        self.post3 = Post.objects.create(
+            title='Sports Post',
+            content='Sports content',
+            author=self.user,
+            post_type='post'
+        )
+        self.post3.tags.add('sports', 'football')
+    
+    def test_filter_by_single_tag(self):
+        """Test filtering posts by a single tag"""
+        url = reverse('post-list') + '?tags=technology'
+        response = self.client.get(url)
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        posts = response.data['posts']['results']
+        self.assertEqual(len(posts), 2)  # post1 and post2 have 'technology' tag
+        
+        post_titles = [post['title'] for post in posts]
+        self.assertIn('Tech Post', post_titles)
+        self.assertIn('AI Post', post_titles)
+        self.assertNotIn('Sports Post', post_titles)
+    
+    def test_filter_by_multiple_tags(self):
+        """Test filtering posts by multiple tags"""
+        url = reverse('post-list') + '?tags=technology,sports'
+        response = self.client.get(url)
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        posts = response.data['posts']['results']
+        self.assertEqual(len(posts), 3)  # All posts match either tag
+    
+    def test_filter_by_nonexistent_tag(self):
+        """Test filtering by tag that doesn't exist"""
+        url = reverse('post-list') + '?tags=nonexistent'
+        response = self.client.get(url)
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        posts = response.data['posts']['results']
+        self.assertEqual(len(posts), 0)
+    
+    def test_no_tag_filter_returns_all_posts(self):
+        """Test that without tag filter, all posts are returned"""
+        url = reverse('post-list')
+        response = self.client.get(url)
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        posts = response.data['posts']['results']
+        self.assertEqual(len(posts), 3)
+
+
+class ReactionBreakdownTests(APITestCase):
+    
+    def setUp(self):
+        self.user1 = User.objects.create_user(
+            username='user1',
+            email='user1@example.com',
+            password='pass123'
+        )
+        self.user2 = User.objects.create_user(
+            username='user2',
+            email='user2@example.com',
+            password='pass123'
+        )
+        self.user3 = User.objects.create_user(
+            username='user3',
+            email='user3@example.com',
+            password='pass123'
+        )
+        
+        self.token1 = Token.objects.create(user=self.user1)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token1.key)
+        
+        self.post = Post.objects.create(
+            title='Test Post',
+            content='Test content',
+            author=self.user1,
+            post_type='post'
+        )
+        
+        # Create different reactions
+        Reacts.objects.create(user=self.user1, post=self.post, react='Love')
+        Reacts.objects.create(user=self.user2, post=self.post, react='Love')
+        Reacts.objects.create(user=self.user3, post=self.post, react='Dislike')
+    
+    def test_reaction_breakdown_in_post_detail(self):
+        """Test that post detail returns reaction breakdown"""
+        url = reverse('post-detail', kwargs={'pk': self.post.id})
+        response = self.client.get(url)
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        post_data = response.data['post']
+        
+        expected_reactions = {
+            'Love': 2,
+            'Dislike': 1,
+            'Thunder': 0
+        }
+        self.assertEqual(post_data['reactions'], expected_reactions)
+    
+    def test_reaction_breakdown_in_post_list(self):
+        """Test that post list returns reaction breakdown"""
+        url = reverse('post-list')
+        response = self.client.get(url)
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        posts = response.data['posts']['results']
+        self.assertEqual(len(posts), 1)
+        
+        expected_reactions = {
+            'Love': 2,
+            'Dislike': 1,
+            'Thunder': 0
+        }
+        self.assertEqual(posts[0]['reactions'], expected_reactions)
+
+
+class NewReactionTypesTests(APITestCase):
+    
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123'
+        )
+        self.token = Token.objects.create(user=self.user)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        
+        self.post = Post.objects.create(
+            title='Test Post',
+            content='Test content',
+            author=self.user,
+            post_type='post'
+        )
+    
+    def test_valid_reaction_types(self):
+        """Test that only Love, Dislike, Thunder are accepted"""
+        valid_reactions = ['Love', 'Dislike', 'Thunder']
+        
+        for reaction in valid_reactions:
+            url = reverse('post-interact', kwargs={'pk': self.post.id})
+            data = {
+                'action_type': 'react',
+                'react_type': reaction
+            }
+            response = self.client.post(url, data, format='json')
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
+    def test_invalid_reaction_types(self):
+        """Test that old reaction types are rejected"""
+        invalid_reactions = ['like', 'love', 'angry', 'sad', 'haha', 'wow']
+        
+        for reaction in invalid_reactions:
+            url = reverse('post-interact', kwargs={'pk': self.post.id})
+            data = {
+                'action_type': 'react',
+                'react_type': reaction
+            }
+            response = self.client.post(url, data, format='json')
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            self.assertIn('Invalid reaction type', response.data['error'])
+    
+    def test_reaction_toggle(self):
+        """Test that reacting with same type toggles (removes) the reaction"""
+        # First reaction
+        url = reverse('post-interact', kwargs={'pk': self.post.id})
+        data = {
+            'action_type': 'react',
+            'react_type': 'Love'
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(Reacts.objects.filter(user=self.user, post=self.post).exists())
+        
+        # Same reaction again (should remove)
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(Reacts.objects.filter(user=self.user, post=self.post).exists())
+    
+    def test_reaction_change(self):
+        """Test that reacting with different type changes the reaction"""
+        # First reaction
+        url = reverse('post-interact', kwargs={'pk': self.post.id})
+        data = {
+            'action_type': 'react',
+            'react_type': 'Love'
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # Change to different reaction
+        data['react_type'] = 'Dislike'
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        reaction = Reacts.objects.get(user=self.user, post=self.post)
+        self.assertEqual(reaction.react, 'Dislike')
