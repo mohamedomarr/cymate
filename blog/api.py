@@ -451,6 +451,8 @@ class PostEditApi(NotificationMixin, APIView):
                 if post.image:
                     post.image.delete()
                 post.image = request.FILES['image']
+            else:
+                post.image = ""
 
             # Handle tags if provided
             if 'tags' in request.data:
