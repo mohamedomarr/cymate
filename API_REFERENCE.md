@@ -117,10 +117,10 @@ Authorization: Token your_auth_token_here
 }
 ```
 
-### Password Reset Request
+### Password Reset Request (Traditional Method)
 **Endpoint**: `/auth/password/reset/`  
 **Method**: POST  
-**Description**: Request password reset email  
+**Description**: Request password reset email via Django's built-in system  
 **Authentication**: Not required
 
 **Payload**:
@@ -130,10 +130,10 @@ Authorization: Token your_auth_token_here
 }
 ```
 
-### Password Reset Confirmation
+### Password Reset Confirmation (Traditional Method)
 **Endpoint**: `/auth/password/reset/confirm/`  
 **Method**: POST  
-**Description**: Confirm password reset with token  
+**Description**: Confirm password reset with UID/token from email  
 **Authentication**: Not required
 
 **Payload**:
@@ -143,6 +143,39 @@ Authorization: Token your_auth_token_here
   "token": "bckm5d-token-example",
   "new_password1": "newpassword123",
   "new_password2": "newpassword123"
+}
+```
+
+### Password Reset via Email Verification (Enhanced Method)
+**Description**: Alternative password reset flow using 6-digit verification codes
+
+**Step 1 - Send Verification Code**:
+```json
+POST /api/email-verification/send-code/
+{
+  "email": "user@example.com",
+  "verification_type": "password_reset"
+}
+```
+
+**Step 2 - Verify Code and Get Token**:
+```json
+POST /api/email-verification/verify-code/
+{
+  "email": "user@example.com",
+  "code": "123456",
+  "verification_type": "password_reset"
+}
+```
+
+**Step 3 - Reset Password with Token**:
+```json
+POST /api/email-verification/reset-password-confirm/
+{
+  "email": "user@example.com",
+  "new_password": "newpassword123",
+  "confirm_password": "newpassword123",
+  "verification_token": "token_from_step_2"
 }
 ```
 
@@ -162,12 +195,14 @@ Authorization: Token your_auth_token_here
 
 ---
 
-## Email Verification Endpoints
+## Email Verification System
+
+This system provides secure 6-digit verification codes for both user registration and password reset workflows. Codes expire after 15 minutes and are single-use only.
 
 ### Send Verification Code
 **Endpoint**: `/api/email-verification/send-code/`  
 **Method**: POST  
-**Description**: Send verification code via email  
+**Description**: Send 6-digit verification code via email  
 **Authentication**: Not required
 
 **Payload**:
@@ -179,10 +214,19 @@ Authorization: Token your_auth_token_here
 ```
 *verification_type options: "registration", "password_reset"*
 
+**Response**:
+```json
+{
+  "message": "Verification code sent successfully",
+  "email": "user@example.com", 
+  "expires_in_minutes": 15
+}
+```
+
 ### Verify Code
 **Endpoint**: `/api/email-verification/verify-code/`  
 **Method**: POST  
-**Description**: Verify email verification code  
+**Description**: Verify 6-digit code and get verification token  
 **Authentication**: Not required
 
 **Payload**:
@@ -194,35 +238,94 @@ Authorization: Token your_auth_token_here
 }
 ```
 
+**Response (Password Reset)**:
+```json
+{
+  "message": "Verification successful",
+  "verification_token": "secure_token_for_password_reset"
+}
+```
+
+**Response (Registration)**:
+```json
+{
+  "message": "Email verified successfully"
+}
+```
+
 ### Resend Verification Code
 **Endpoint**: `/api/email-verification/resend-code/`  
 **Method**: POST  
-**Description**: Resend verification code  
-**Authentication**: Not required
-
-### Password Reset Confirm
-**Endpoint**: `/api/email-verification/reset-password-confirm/`  
-**Method**: POST  
-**Description**: Confirm password reset with verification token  
+**Description**: Resend verification code (if previous expired)  
 **Authentication**: Not required
 
 **Payload**:
 ```json
 {
   "email": "user@example.com",
-  "new_password": "newpassword123",
-  "confirm_password": "newpassword123",
-  "verification_token": "verification_token_here"
+  "verification_type": "registration"
 }
 ```
 
-### Verification Status
+### Password Reset Confirmation
+**Endpoint**: `/api/email-verification/reset-password-confirm/`  
+**Method**: POST  
+**Description**: Complete password reset using verification token  
+**Authentication**: Not required
+
+**Payload**:
+```json
+{
+  "email": "user@example.com",
+  "new_password": "newpassword123", 
+  "confirm_password": "newpassword123",
+  "verification_token": "token_from_verify_step"
+}
+```
+
+**Response**:
+```json
+{
+  "message": "Password reset successful"
+}
+```
+
+### Check Verification Status
 **Endpoint**: `/api/email-verification/status/`  
 **Method**: GET  
-**Description**: Check verification status  
+**Description**: Check if there's an active verification code  
 **Authentication**: Not required
 
 **Query Parameters**: `?email=user@example.com&type=registration`
+
+**Response**:
+```json
+{
+  "has_active_code": true,
+  "expires_at": "2024-01-15T10:45:00Z",
+  "created_at": "2024-01-15T10:30:00Z"
+}
+```
+
+---
+
+## Password Reset Methods
+
+CyMate provides **two different password reset approaches**:
+
+### Method 1: Traditional Django Password Reset
+- Uses Django's built-in password reset system
+- Sends email with UID/token link
+- Endpoints: `/auth/password/reset/` → `/auth/password/reset/confirm/`
+- **Use case**: Standard email-based password reset with clickable links
+
+### Method 2: Email Verification Code Reset  
+- Uses 6-digit verification codes (same system as registration)
+- Three-step process: send code → verify code → reset password
+- Endpoints: `/api/email-verification/send-code/` → `/api/email-verification/verify-code/` → `/api/email-verification/reset-password-confirm/`
+- **Use case**: Mobile-friendly, modern UX with short codes instead of long URLs
+
+Both methods are fully functional and can be used based on your frontend requirements.
 
 ---
 
