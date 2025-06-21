@@ -260,8 +260,13 @@ class NotificationAPI(NotificationMixin, viewsets.ViewSet):
         notifications = Notification.objects.filter(
             user=request.user,
             is_read=False
+        ).select_related('sender', 'sender__user_profile', 'post')
+        
+        serializer = NotificationSerializer(
+            notifications, 
+            many=True, 
+            context={'request': request}
         )
-        serializer = NotificationSerializer(notifications, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=['post'])

@@ -3,7 +3,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import UserProfileSerializer, NotificationSerializer  # Fixed import
+from .serializers import UserProfileSerializer
+from .serializer import NotificationSerializer  # Fixed import to use correct module
 from .models import User, Profile, Notification
 
 # Create your views here.
@@ -47,8 +48,15 @@ def update_user_profile(request):
 @permission_classes([IsAuthenticated])
 def get_notifications(request):
     """Get user notifications"""
-    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
-    serializer = NotificationSerializer(notifications, many=True)
+    notifications = Notification.objects.filter(
+        user=request.user
+    ).select_related('sender', 'sender__user_profile', 'post').order_by('-created_at')
+    
+    serializer = NotificationSerializer(
+        notifications, 
+        many=True, 
+        context={'request': request}
+    )
     return Response(serializer.data)
 
 @api_view(['POST'])

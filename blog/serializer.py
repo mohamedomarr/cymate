@@ -23,10 +23,44 @@ class CustomLoginSerializer(LoginSerializer):
     email = serializers.EmailField(required=True)
     password = serializers.CharField(write_only=True)
 
-class UserSerializer(serializers.ModelSerializer):
+class AuthorSerializer(serializers.ModelSerializer):
+    """Unified author serializer for consistent author metadata across all models"""
+    profile_picture = serializers.SerializerMethodField()
+    
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name']
+        fields = ['username', 'first_name', 'last_name', 'profile_picture']
+    
+    def get_profile_picture(self, obj):
+        """Get profile picture URL from user's profile"""
+        try:
+            if hasattr(obj, 'user_profile') and obj.user_profile.profile_image:
+                request = self.context.get('request')
+                if request:
+                    return request.build_absolute_uri(obj.user_profile.profile_image.url)
+                return obj.user_profile.profile_image.url
+        except (AttributeError, ValueError):
+            pass
+        return None
+
+class UserSerializer(serializers.ModelSerializer):
+    profile_picture = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile_picture']
+    
+    def get_profile_picture(self, obj):
+        """Get profile picture URL from user's profile"""
+        try:
+            if hasattr(obj, 'user_profile') and obj.user_profile.profile_image:
+                request = self.context.get('request')
+                if request:
+                    return request.build_absolute_uri(obj.user_profile.profile_image.url)
+                return obj.user_profile.profile_image.url
+        except (AttributeError, ValueError):
+            pass
+        return None
 
 class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username')
@@ -78,26 +112,63 @@ class ProfileSerializer(serializers.ModelSerializer):
         return self.validate_profile_image(value)
 
 class NotificationSerializer(serializers.ModelSerializer):
-    sender = serializers.StringRelatedField()
+    sender = AuthorSerializer(read_only=True)
     user = serializers.StringRelatedField()
+    post_id = serializers.IntegerField(source='post.id', read_only=True)
+    liked = serializers.SerializerMethodField()
+    disliked = serializers.SerializerMethodField()
+    thundered = serializers.SerializerMethodField()
 
     class Meta:
         model = Notification
-        fields = ['id', 'user', 'sender', 'notification_type', 'message', 'is_read', 'created_at']
+        fields = ['id', 'user', 'sender', 'notification_type', 'message', 'is_read', 
+                 'created_at', 'post_id', 'liked', 'disliked', 'thundered']
         read_only_fields = ['created_at']
+    
+    def get_liked(self, obj):
+        """Check if the notification is for a 'like' reaction"""
+        if obj.notification_type == 'like' and obj.post and obj.sender:
+            try:
+                reaction = Reacts.objects.get(user=obj.sender, post=obj.post)
+                return reaction.react == 'Love'
+            except Reacts.DoesNotExist:
+                pass
+        return False
+    
+    def get_disliked(self, obj):
+        """Check if the notification is for a 'dislike' reaction"""
+        if obj.notification_type == 'like' and obj.post and obj.sender:
+            try:
+                reaction = Reacts.objects.get(user=obj.sender, post=obj.post)
+                return reaction.react == 'Dislike'
+            except Reacts.DoesNotExist:
+                pass
+        return False
+    
+    def get_thundered(self, obj):
+        """Check if the notification is for a 'thunder' reaction"""
+        if obj.notification_type == 'like' and obj.post and obj.sender:
+            try:
+                reaction = Reacts.objects.get(user=obj.sender, post=obj.post)
+                return reaction.react == 'Thunder'
+            except Reacts.DoesNotExist:
+                pass
+        return False
 
 class CommentSerializer(serializers.ModelSerializer):
+    author = AuthorSerializer(source='user', read_only=True)
+    # Keep backward compatibility
     user = serializers.StringRelatedField()
     first_name = serializers.CharField(source='user.first_name', read_only=True)
     last_name = serializers.CharField(source='user.last_name', read_only=True)
 
     class Meta:
         model = Comment
-        fields = ['id', 'user', 'first_name', 'last_name', 'content', 'created_at']
+        fields = ['id', 'user', 'first_name', 'last_name', 'author', 'content', 'created_at']
         read_only_fields = ['created_at']
 
 class PostListSerializer(TaggitSerializer, serializers.ModelSerializer):
-    author = serializers.StringRelatedField()
+    author = AuthorSerializer(read_only=True)
     tags = TagListSerializerField()
     comments_count = serializers.SerializerMethodField()
     shares_count = serializers.SerializerMethodField()

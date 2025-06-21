@@ -11,10 +11,14 @@ class NotificationMixin:
                     notifications = Notification.objects.filter(
                         user=request.user,
                         is_read=False
-                    ).order_by('-created_at')
+                    ).select_related('sender', 'sender__user_profile', 'post').order_by('-created_at')
 
-                    # Serialize notifications
-                    notification_data = NotificationSerializer(notifications, many=True).data
+                    # Serialize notifications with request context
+                    notification_data = NotificationSerializer(
+                        notifications, 
+                        many=True, 
+                        context={'request': request}
+                    ).data
 
                     # Handle different response data types
                     if not hasattr(response, 'data'):
