@@ -352,14 +352,46 @@ python manage.py runserver
 
 - **Response**: Returns the created comment
 
-#### 2.5 List Saved Posts
+#### 2.5 Edit Comment
+
+- **URL**: `http://127.0.0.1:8000/api/comments/{comment_id}/`
+- **Method**: PATCH
+- **Description**: Edit an existing comment (only available to comment owner)
+- **Auth Required**: Yes (Token Authentication)
+- **Payload**:
+
+```json
+{
+  "content": "Updated comment text"
+}
+```
+
+- **Response**: Returns updated comment details
+- **Permissions**: Only the comment owner can edit their comments
+- **Error Responses**:
+  - **400 Bad Request**: Missing content field
+  - **404 Not Found**: Comment not found or user doesn't own the comment
+
+#### 2.6 Delete Comment
+
+- **URL**: `http://127.0.0.1:8000/api/comments/{comment_id}/`
+- **Method**: DELETE
+- **Description**: Delete an existing comment (only available to comment owner)
+- **Auth Required**: Yes (Token Authentication)
+- **Payload**: None required
+- **Response**: 204 No Content on success
+- **Permissions**: Only the comment owner can delete their comments
+- **Error Responses**:
+  - **404 Not Found**: Comment not found or user doesn't own the comment
+
+#### 2.7 List Saved Posts
 
 - **URL**: `http://127.0.0.1:8000/api/posts/saved/`
 - **Method**: GET
 - **Description**: Get all posts saved by the current user
 - **Response**: Returns list of saved posts
 
-#### 2.6 Edit a Post
+#### 2.8 Edit a Post
 
 - **URL**: `http://127.0.0.1:8000/api/posts/{post_id}/edit/`
 - **Method**: PUT
@@ -377,7 +409,7 @@ python manage.py runserver
 
 - **Response**: Returns updated post details
 
-#### 2.7 Delete a Post
+#### 2.9 Delete a Post
 
 - **URL**: `http://127.0.0.1:8000/api/posts/{post_id}/edit/`
 - **Method**: DELETE
@@ -388,7 +420,7 @@ python manage.py runserver
   - Other users receive 404 error
 - **Response**: 204 No Content on success
 
-#### 2.8 Filter Posts by Tags
+#### 2.10 Filter Posts by Tags
 
 - **URL**: `http://127.0.0.1:8000/api/posts/?tags={tag_names}`
 - **Method**: GET
@@ -398,16 +430,43 @@ python manage.py runserver
   - Multiple tags: `?tags=technology,python,django`
 - **Response**: Returns posts that match any of the specified tags
 
-### 3. Profile Management Endpoints
+### 3. Comment Management Endpoints
 
-#### 3.1 View User Profile
+The comment management system provides functionality to edit and delete individual comments with proper ownership validation.
+
+#### 3.1 Available Comment Endpoints
+
+| Endpoint | Method | Description | Auth Required |
+|----------|--------|-------------|---------------|
+| `/api/comments/{comment_id}/` | PATCH | Edit comment | Yes |
+| `/api/comments/{comment_id}/` | DELETE | Delete comment | Yes |
+
+#### 3.2 Example Usage
+
+**Edit a comment:**
+```bash
+curl -X PATCH http://127.0.0.1:8000/api/comments/123/ \
+-H "Authorization: Token YOUR_AUTH_TOKEN" \
+-H "Content-Type: application/json" \
+-d '{"content":"Updated comment content"}'
+```
+
+**Delete a comment:**
+```bash
+curl -X DELETE http://127.0.0.1:8000/api/comments/123/ \
+-H "Authorization: Token YOUR_AUTH_TOKEN"
+```
+
+### 4. Profile Management Endpoints
+
+#### 4.1 View User Profile
 
 - **URL**: `http://127.0.0.1:8000/api/profile/{username}/`
 - **Method**: GET
 - **Description**: View a user's profile
 - **Response**: Returns user profile details, posts, and follow information
 
-#### 3.2 Create Profile
+#### 4.2 Create Profile
 
 - **URL**: `http://127.0.0.1:8000/api/profile/create/`
 - **Method**: POST
@@ -426,7 +485,7 @@ python manage.py runserver
 
 - **Response**: Returns created/updated profile
 
-#### 3.3 Edit Profile
+#### 4.3 Edit Profile
 
 - **URL**: `http://127.0.0.1:8000/api/profile/edit/`
 - **Method**: PUT
@@ -457,16 +516,16 @@ python manage.py runserver
 
 - **Response**: Returns updated profile
 
-### 4. Notification Endpoints
+### 5. Notification Endpoints
 
-#### 4.1 List Notifications
+#### 5.1 List Notifications
 
 - **URL**: `http://127.0.0.1:8000/api/notifications/`
 - **Method**: GET
 - **Description**: Get all unread notifications for current user
 - **Response**: Returns list of unread notifications
 
-#### 4.2 Mark Notification as Read
+#### 5.2 Mark Notification as Read
 
 - **URL**: `http://127.0.0.1:8000/api/notifications/{notification_id}/mark-read/`
 - **Method**: POST
@@ -474,7 +533,7 @@ python manage.py runserver
 - **Payload**: Empty (no data required)
 - **Response**: Success status
 
-#### 4.3 Mark All Notifications as Read
+#### 5.3 Mark All Notifications as Read
 
 - **URL**: `http://127.0.0.1:8000/api/notifications/mark-all-read/`
 - **Method**: POST
@@ -482,9 +541,9 @@ python manage.py runserver
 - **Payload**: Empty (no data required)
 - **Response**: Success status
 
-### 5. Advanced Usage Examples
+### 6. Advanced Usage Examples
 
-#### 5.1 Creating a Post with an Image
+#### 6.1 Creating a Post with an Image
 
 - **URL**: `http://127.0.0.1:8000/api/posts/`
 - **Method**: POST
@@ -497,14 +556,14 @@ python manage.py runserver
   - `image`: [file upload]
 - **Response**: Returns created post details with image URL
 
-#### 5.2 Filtering Posts by Tag
+#### 6.2 Filtering Posts by Tag
 
 - **URL**: `http://127.0.0.1:8000/api/posts/?tags=technology`
 - **Method**: GET
 - **Description**: Get posts with specific tag
 - **Response**: Returns filtered posts
 
-### 6. Authentication Notes
+### 7. Authentication Notes
 
 1. Most endpoints require authentication using Token Authentication
 2. Include the token in the Authorization header:
@@ -512,7 +571,7 @@ python manage.py runserver
 3. JWT authentication is also configured if you prefer:
    - `Authorization: Bearer your_jwt_token_here`
 
-### 7. Common HTTP Status Codes
+### 8. Common HTTP Status Codes
 
 - **200 OK**: Request succeeded
 - **201 Created**: Resource created successfully
@@ -522,7 +581,7 @@ python manage.py runserver
 - **404 Not Found**: Resource not found
 - **500 Internal Server Error**: Server-side error
 
-### 8. Pagination
+### 9. Pagination
 
 List endpoints return paginated results with the following structure:
 
@@ -537,7 +596,7 @@ List endpoints return paginated results with the following structure:
 }
 ```
 
-### 9. Testing the API
+### 10. Testing the API
 
 You can test these endpoints using:
 
@@ -566,7 +625,11 @@ curl -X POST http://127.0.0.1:8000/api/posts/ \
 
 5. **✅ ENHANCED - Reaction Data**: Post responses now include detailed reaction breakdown instead of simple count.
 
-6. **Profile URL Inconsistency**: There are two URLs for profile creation:
+6. **✅ NEW FEATURE - Comment Management**: Added dedicated endpoints for editing and deleting comments with proper ownership validation:
+   - `PATCH /api/comments/<comment_id>/` - Edit comment (owner only)
+   - `DELETE /api/comments/<comment_id>/` - Delete comment (owner only)
+
+7. **Profile URL Inconsistency**: There are two URLs for profile creation:
    - `/api/profile/create/` - The standard endpoint
    - `/api/profile-create/` - An alternate endpoint
    

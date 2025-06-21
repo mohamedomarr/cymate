@@ -8,7 +8,8 @@ from .api import (
     NotificationAPI,
     CreateProfileApi,
     EditProfileApi,
-    PostEditApi
+    PostEditApi,
+    CommentViewSet
 )
 from .views_fix import edit_profile, create_profile
 from .enhanced_registration_views import (
@@ -29,6 +30,12 @@ urlpatterns = [
     }), name='post-comment'),
     path('posts/saved/', PostSavedListApi.as_view({'get': 'list'}), name='saved-posts'),
     path('posts/<int:post_id>/edit/', PostEditApi.as_view(), name='post-edit'),
+
+    # Comment related endpoints
+    path('comments/<int:pk>/', CommentViewSet.as_view({
+        'patch': 'partial_update',
+        'delete': 'destroy'
+    }), name='comment-detail'),
 
     # Profile related endpoints
     path('profile/<str:username>/', ProfileListApi.as_view(), name='profile-detail'),

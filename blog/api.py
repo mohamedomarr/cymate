@@ -516,3 +516,83 @@ class PostEditApi(NotificationMixin, APIView):
                 {'error': str(e)},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+class CommentViewSet(NotificationMixin, viewsets.ViewSet):
+    """
+    ViewSet for managing individual comments.
+    Provides edit and delete functionality with ownership validation.
+    """
+    permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
+
+    def get_comment(self, comment_id, user):
+        """Get comment and verify ownership"""
+        try:
+            comment = Comment.objects.get(id=comment_id)
+            if comment.user == user:
+                return comment
+            return None
+        except Comment.DoesNotExist:
+            return None
+
+    def partial_update(self, request, pk=None):
+        """
+        Edit Comment - PATCH /comments/<comment_id>/
+        Auth required. Validate ownership before allowing edit.
+        Payload: { "content": "updated comment text" }
+        """
+        comment = self.get_comment(pk, request.user)
+        if not comment:
+            return Response(
+                {'error': 'Comment not found or you do not have permission to edit this comment'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        content = request.data.get('content')
+        if not content:
+            return Response(
+                {'error': 'Comment content is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            # Update comment content
+            comment.content = content
+            comment.save()
+
+            # Return updated comment data
+            serializer = CommentSerializer(comment, context={'request': request})
+            return Response(
+                serializer.data,
+                status=status.HTTP_200_OK
+            )
+
+        except Exception as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+    def destroy(self, request, pk=None):
+        """
+        Delete Comment - DELETE /comments/<comment_id>/
+        Auth required. Validate ownership before deletion.
+        Return 204 No Content on success.
+        """
+        comment = self.get_comment(pk, request.user)
+        if not comment:
+            return Response(
+                {'error': 'Comment not found or you do not have permission to delete this comment'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        try:
+            # Delete the comment
+            comment.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        except Exception as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
