@@ -9,7 +9,8 @@ from .api import (
     CreateProfileApi,
     EditProfileApi,
     PostEditApi,
-    CommentViewSet
+    CommentViewSet,
+    ModifyToolkitTokensView
 )
 from .views_fix import edit_profile, create_profile
 from .enhanced_registration_views import (
@@ -52,4 +53,7 @@ urlpatterns = [
     # Enhanced registration endpoints
     path('auth/enhanced-registration/', EnhancedRegistrationView.as_view(), name='enhanced-registration'),
     path('auth/pre-registration-verify/', PreRegistrationEmailVerificationView.as_view(), name='pre-registration-verify'),
+    
+    # Toolkit tokens endpoints
+    path('user/toolkit-tokens/modify/', ModifyToolkitTokensView.as_view(), name='modify-toolkit-tokens'),
 ]

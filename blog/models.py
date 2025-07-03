@@ -22,6 +22,10 @@ class User(AbstractUser):
         help_text='Specific permissions for this user.',
         verbose_name='user permissions',
     )
+    toolkit_tokens = models.PositiveIntegerField(
+        default=50,
+        help_text='Number of toolkit tokens available to the user'
+    )
 
     def __str__(self):
         return self.username

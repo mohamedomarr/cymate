@@ -596,3 +596,61 @@ class CommentViewSet(NotificationMixin, viewsets.ViewSet):
                 {'error': str(e)},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+class ModifyToolkitTokensView(APIView):
+    """
+    API endpoint for modifying user's toolkit tokens
+    
+    POST /api/user/toolkit-tokens/modify/
+    {
+        "operation": "add",  // or "deduct"
+        "amount": 10
+    }
+    """
+    permission_classes = [IsAuthenticated]
+    parser_classes = (JSONParser,)
+
+    def post(self, request):
+        operation = request.data.get('operation')
+        amount = request.data.get('amount')
+
+        # Validate operation
+        if operation not in ['add', 'deduct']:
+            return Response(
+                {'error': 'Invalid operation. Must be "add" or "deduct"'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Validate amount
+        if not amount or not isinstance(amount, (int, float)) or amount <= 0:
+            return Response(
+                {'error': 'Amount must be a positive number'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        amount = int(amount)  # Ensure it's an integer
+        user = request.user
+
+        try:
+            if operation == 'add':
+                user.toolkit_tokens += amount
+            elif operation == 'deduct':
+                if user.toolkit_tokens < amount:
+                    return Response(
+                        {'error': 'Insufficient tokens. Cannot deduct more than available balance'},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                user.toolkit_tokens -= amount
+
+            user.save()
+
+            return Response(
+                {'toolkit_tokens': user.toolkit_tokens},
+                status=status.HTTP_200_OK
+            )
+
+        except Exception as e:
+            return Response(
+                {'error': f'Failed to modify tokens: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

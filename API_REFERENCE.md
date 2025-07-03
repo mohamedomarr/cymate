@@ -113,7 +113,8 @@ Authorization: Token your_auth_token_here
   "email": "user@example.com",
   "first_name": "John",
   "last_name": "Doe",
-  "profile_picture": "https://example.com/media/profile/image.jpg"
+  "profile_picture": "https://example.com/media/profile/image.jpg",
+  "toolkit_tokens": 50
 }
 ```
 
@@ -190,6 +191,49 @@ POST /api/email-verification/reset-password-confirm/
   "old_password": "currentpassword",
   "new_password1": "newpassword123",
   "new_password2": "newpassword123"
+}
+```
+
+### Modify Toolkit Tokens
+**Endpoint**: `/api/user/toolkit-tokens/modify/`  
+**Method**: POST  
+**Description**: Add or deduct toolkit tokens from current user's balance
+
+**Payload**:
+```json
+{
+  "operation": "add",
+  "amount": 10
+}
+```
+*operation options: "add", "deduct"*
+
+**Response**:
+```json
+{
+  "toolkit_tokens": 60
+}
+```
+
+**Error Responses**:
+- **400 Bad Request** (Invalid operation):
+```json
+{
+  "error": "Invalid operation. Must be \"add\" or \"deduct\""
+}
+```
+
+- **400 Bad Request** (Invalid amount):
+```json
+{
+  "error": "Amount must be a positive number"
+}
+```
+
+- **400 Bad Request** (Insufficient tokens):
+```json
+{
+  "error": "Insufficient tokens. Cannot deduct more than available balance"
 }
 ```
 
