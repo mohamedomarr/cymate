@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.contrib.auth.models import Group
 
-from .serializers import CustomRegisterSerializer
+from .serializer import CustomRegisterSerializer
 from .email_verification_service import EmailVerificationService
 from .models import EmailVerification
 

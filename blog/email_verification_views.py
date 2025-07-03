@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.conf import settings
 from datetime import timedelta
 
-from .serializers import (
+from .serializer import (
     SendVerificationCodeSerializer,
     VerifyCodeSerializer,
     PasswordResetConfirmSerializer
