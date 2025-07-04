@@ -1,0 +1,1460 @@
+/* ============================================
+   🎨 CYMATE ADMIN PANEL - GLASSMORPHISM THEME
+   ============================================ */
+
+:root {
+    --cymate-purple: #9747FF;
+    --cymate-purple-light: rgba(151, 71, 255, 0.1);
+    --cymate-purple-medium: rgba(151, 71, 255, 0.3);
+    --cymate-purple-dark: rgba(151, 71, 255, 0.8);
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    
+    /* Light theme variables */
+    --light-bg: rgba(255, 255, 255, 0.9);
+    --light-text: #333;
+    --light-glass-bg: rgba(255, 255, 255, 0.7);
+    --light-glass-border: rgba(0, 0, 0, 0.1);
+    
+    /* Dark theme variables */
+    --dark-bg: rgba(18, 18, 23, 0.9);
+    --dark-text: #e5e5e5;
+    --dark-glass-bg: rgba(30, 30, 40, 0.7);
+    --dark-glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   🌓 THEME TOGGLER BUTTON
+   ============================================ */
+
+.theme-toggler {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s ease;
+    margin-right: 10px;
+}
+
+.theme-toggler:hover {
+    background: var(--cymate-purple-medium) !important;
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(151, 71, 255, 0.3);
+}
+
+.theme-icon {
+    font-size: 16px;
+    color: var(--cymate-purple);
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.theme-toggler:hover .theme-icon {
+    color: white;
+    transform: rotate(180deg);
+}
+
+/* ============================================
+   🌟 GLASSMORPHISM EFFECTS
+   ============================================ */
+
+/* Main content wrapper */
+.content-wrapper {
+    background: linear-gradient(135deg, 
+        rgba(151, 71, 255, 0.1) 0%, 
+        rgba(255, 255, 255, 0.05) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    margin: 20px;
+    padding: 20px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+/* Cards and panels */
+.card, .box, .info-box, .small-box {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 15px !important;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37) !important;
+}
+
+/* Tables */
+.table {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 15px !important;
+    overflow: hidden;
+}
+
+.table th {
+    background: var(--cymate-purple-medium) !important;
+    color: white !important;
+    border: none !important;
+}
+
+.table td {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid var(--glass-border) !important;
+}
+
+/* ============================================
+   🟣 PURPLE THEME CUSTOMIZATION
+   ============================================ */
+
+/* Navbar */
+.main-header.navbar {
+    background: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    border: none !important;
+    box-shadow: 0 4px 20px rgba(151, 71, 255, 0.3) !important;
+}
+
+/* Sidebar */
+.main-sidebar {
+    background: linear-gradient(180deg, 
+        rgba(151, 71, 255, 0.9) 0%, 
+        rgba(124, 58, 237, 0.9) 100%) !important;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active {
+    background-color: var(--cymate-purple) !important;
+    color: white !important;
+    border-radius: 10px !important;
+    margin: 2px 10px !important;
+    box-shadow: 0 4px 15px rgba(151, 71, 255, 0.4) !important;
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link:hover {
+    background-color: var(--cymate-purple-medium) !important;
+    color: white !important;
+    border-radius: 10px !important;
+    margin: 2px 10px !important;
+    transition: all 0.3s ease !important;
+}
+
+/* ============================================
+   🔘 BUTTONS & INTERACTIVE ELEMENTS
+   ============================================ */
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    border: 1px solid var(--cymate-purple) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 15px rgba(151, 71, 255, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(151, 71, 255, 0.4) !important;
+}
+
+.btn-outline-primary {
+    border: 2px solid var(--cymate-purple) !important;
+    color: var(--cymate-purple) !important;
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(10px) !important;
+    border-radius: 10px !important;
+}
+
+.btn-outline-primary:hover {
+    background: var(--cymate-purple) !important;
+    color: white !important;
+    transform: translateY(-2px) !important;
+}
+
+/* ============================================
+   🟣 DJANGO ADMIN CHANGE BUTTONS - PURPLE THEME
+   ============================================ */
+
+/* Change/Edit buttons in admin */
+.changelink,
+.addlink,
+.viewlink,
+.historylink,
+.deletelink,
+.button,
+.default,
+input[type="submit"],
+input[type="button"],
+.submit-row input,
+.object-tools a,
+.object-tools li a {
+    background: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    color: white !important;
+    border: 1px solid var(--cymate-purple) !important;
+    border-radius: 8px !important;
+    padding: 8px 16px !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    font-weight: 500 !important;
+    box-shadow: 0 2px 10px rgba(151, 71, 255, 0.2) !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Hover effects for change buttons */
+.changelink:hover,
+.addlink:hover,
+.viewlink:hover,
+.historylink:hover,
+.deletelink:hover,
+.button:hover,
+.default:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+.submit-row input:hover,
+.object-tools a:hover,
+.object-tools li a:hover {
+    background: linear-gradient(135deg, #7c3aed, var(--cymate-purple)) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 15px rgba(151, 71, 255, 0.4) !important;
+    color: white !important;
+}
+
+/* Specific styling for different button types */
+.addlink::before {
+    content: "➕ ";
+    font-size: 12px;
+}
+
+.changelink::before {
+    content: "✏️ ";
+    font-size: 12px;
+}
+
+.deletelink::before {
+    content: "🗑️ ";
+    font-size: 12px;
+}
+
+.viewlink::before {
+    content: "👁️ ";
+    font-size: 12px;
+}
+
+/* Action buttons in changelist */
+.actions .button,
+.actions input[type="submit"] {
+    background: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    color: white !important;
+    border: 1px solid var(--cymate-purple) !important;
+    border-radius: 8px !important;
+    padding: 6px 12px !important;
+    margin: 0 5px !important;
+}
+
+/* ============================================
+   🟣 UNIVERSAL PURPLE BUTTON OVERRIDE
+   ============================================ */
+
+/* Ensure ALL buttons are purple - catch any missed ones */
+button,
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+.btn,
+.button,
+.default,
+a.button,
+.submit-link,
+.cancel-link,
+.deletelink,
+.addlink,
+.changelink,
+.viewlink,
+.historylink,
+.grp-button,
+.related-widget-wrapper-link,
+.add-another,
+.delete-related {
+    background: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    color: white !important;
+    border: 1px solid var(--cymate-purple) !important;
+    border-radius: 8px !important;
+    padding: 8px 16px !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+    box-shadow: 0 2px 10px rgba(151, 71, 255, 0.2) !important;
+    transition: all 0.3s ease !important;
+    cursor: pointer !important;
+}
+
+/* Universal hover effects for ALL buttons */
+button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+input[type="reset"]:hover,
+.btn:hover,
+.button:hover,
+.default:hover,
+a.button:hover,
+.submit-link:hover,
+.cancel-link:hover,
+.deletelink:hover,
+.addlink:hover,
+.changelink:hover,
+.viewlink:hover,
+.historylink:hover,
+.grp-button:hover,
+.related-widget-wrapper-link:hover,
+.add-another:hover,
+.delete-related:hover {
+    background: linear-gradient(135deg, #7c3aed, var(--cymate-purple)) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 15px rgba(151, 71, 255, 0.4) !important;
+    color: white !important;
+}
+
+/* Override any framework button classes */
+.btn-secondary,
+.btn-success,
+.btn-info,
+.btn-warning,
+.btn-danger,
+.btn-light,
+.btn-dark,
+.btn-link {
+    background: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    color: white !important;
+    border: 1px solid var(--cymate-purple) !important;
+}
+
+.btn-secondary:hover,
+.btn-success:hover,
+.btn-info:hover,
+.btn-warning:hover,
+.btn-danger:hover,
+.btn-light:hover,
+.btn-dark:hover,
+.btn-link:hover {
+    background: linear-gradient(135deg, #7c3aed, var(--cymate-purple)) !important;
+    color: white !important;
+    border: 1px solid var(--cymate-purple) !important;
+}
+
+/* Save buttons in forms */
+.submit-row .default,
+.submit-row input[value="Save"],
+.submit-row input[value="Save and continue editing"],
+.submit-row input[value="Save and add another"] {
+    background: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    color: white !important;
+    border: 1px solid var(--cymate-purple) !important;
+    border-radius: 8px !important;
+    padding: 10px 20px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 3px 12px rgba(151, 71, 255, 0.3) !important;
+}
+
+/* Delete confirmation button - NOW PURPLE TOO */
+.submit-row input[value="Yes, I'm sure"],
+.deletelink-box input {
+    background: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    color: white !important;
+    border: 1px solid var(--cymate-purple) !important;
+    border-radius: 8px !important;
+    padding: 10px 20px !important;
+    box-shadow: 0 3px 12px rgba(151, 71, 255, 0.3) !important;
+}
+
+.submit-row input[value="Yes, I'm sure"]:hover,
+.deletelink-box input:hover {
+    background: linear-gradient(135deg, #7c3aed, var(--cymate-purple)) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 15px rgba(151, 71, 255, 0.4) !important;
+}
+
+/* ============================================
+   📝 FORMS & INPUTS
+   ============================================ */
+
+.form-control {
+    background: var(--glass-bg) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 10px !important;
+    backdrop-filter: blur(10px) !important;
+    color: #333 !important;
+}
+
+.form-control:focus {
+    border-color: var(--cymate-purple) !important;
+    box-shadow: 0 0 15px rgba(151, 71, 255, 0.3) !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ============================================
+   📊 DASHBOARD WIDGETS
+   ============================================ */
+
+.info-box {
+    border-radius: 15px !important;
+    overflow: hidden;
+}
+
+.info-box .info-box-icon {
+    background: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    color: white !important;
+}
+
+.small-box {
+    border-radius: 15px !important;
+    overflow: hidden;
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.small-box > .inner {
+    color: var(--cymate-purple) !important;
+    font-weight: 600 !important;
+}
+
+/* ============================================
+   🎯 NAVIGATION IMPROVEMENTS
+   ============================================ */
+
+.nav-pills .nav-link.active {
+    background: var(--cymate-purple) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 15px rgba(151, 71, 255, 0.3) !important;
+}
+
+.breadcrumb {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(10px) !important;
+    border-radius: 10px !important;
+    border: 1px solid var(--glass-border) !important;
+}
+
+/* ============================================
+   ⚡ ANIMATIONS & TRANSITIONS
+   ============================================ */
+
+.card, .box, .btn, .form-control {
+    transition: all 0.3s ease !important;
+}
+
+.card:hover, .box:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 12px 40px rgba(151, 71, 255, 0.2) !important;
+}
+
+/* ============================================
+   📱 RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+    .content-wrapper {
+        margin: 10px;
+        padding: 15px;
+        border-radius: 15px;
+    }
+    
+    .card, .box {
+        border-radius: 10px !important;
+    }
+}
+
+/* ============================================
+   🎨 CUSTOM LOGO STYLING
+   ============================================ */
+
+.brand-link {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    border-bottom: 1px solid var(--glass-border) !important;
+}
+
+.brand-link .brand-image {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+/* ============================================
+   🔔 ALERTS & NOTIFICATIONS
+   ============================================ */
+
+.alert {
+    border-radius: 15px !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid var(--glass-border) !important;
+}
+
+.alert-success {
+    background: rgba(34, 197, 94, 0.1) !important;
+    border-color: rgba(34, 197, 94, 0.3) !important;
+}
+
+.alert-danger {
+    background: rgba(239, 68, 68, 0.1) !important;
+    border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+.alert-warning {
+    background: rgba(245, 158, 11, 0.1) !important;
+    border-color: rgba(245, 158, 11, 0.3) !important;
+}
+
+/* ============================================
+   🎭 ADMIN SPECIFIC STYLING
+   ============================================ */
+
+.module caption {
+    background: var(--cymate-purple) !important;
+    color: white !important;
+    border-radius: 10px 10px 0 0 !important;
+}
+
+.dashboard .module {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 15px !important;
+}
+
+/* Change list styling */
+#changelist {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(10px) !important;
+    border-radius: 15px !important;
+    padding: 20px !important;
+}
+
+/* Pagination */
+.pagination .page-link,
+.paginator a,
+.paginator .current {
+    background: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    border: 1px solid var(--cymate-purple) !important;
+    color: white !important;
+    border-radius: 8px !important;
+    margin: 0 3px !important;
+    padding: 8px 12px !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    box-shadow: 0 2px 8px rgba(151, 71, 255, 0.2) !important;
+    transition: all 0.3s ease !important;
+}
+
+.pagination .page-link:hover,
+.paginator a:hover {
+    background: linear-gradient(135deg, #7c3aed, var(--cymate-purple)) !important;
+    color: white !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 3px 12px rgba(151, 71, 255, 0.3) !important;
+}
+
+.pagination .page-item.active .page-link,
+.paginator .current {
+    background: linear-gradient(135deg, var(--cymate-purple), #5a2d91) !important;
+    border-color: var(--cymate-purple) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    box-shadow: 0 3px 12px rgba(151, 71, 255, 0.4) !important;
+}
+
+/* Django admin pagination specific */
+.paginator {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.paginator .end {
+    margin: 0 10px;
+    color: var(--cymate-purple) !important;
+    font-weight: 600;
+}
+
+/* ============================================
+   🌓 THEME SWITCHING - LIGHT & DARK MODES
+   ============================================ */
+
+/* Light Theme Styles */
+body.cymate-light-theme {
+    /* Override Django's button CSS variables for proper text visibility */
+    --button-fg: #ffffff !important;
+    --default-button-bg: var(--cymate-purple) !important;
+    --default-button-hover-bg: var(--cymate-purple-dark) !important;
+    --button-bg: var(--cymate-purple) !important;
+    --button-hover-bg: var(--cymate-purple-dark) !important;
+    
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    color: var(--light-text) !important;
+}
+
+body.cymate-light-theme .content-wrapper {
+    background: linear-gradient(135deg, 
+        rgba(151, 71, 255, 0.05) 0%, 
+        rgba(255, 255, 255, 0.8) 100%) !important;
+}
+
+body.cymate-light-theme .card, 
+body.cymate-light-theme .box, 
+body.cymate-light-theme .info-box, 
+body.cymate-light-theme .small-box {
+    background: var(--light-glass-bg) !important;
+    border: 1px solid var(--light-glass-border) !important;
+    color: var(--light-text) !important;
+}
+
+body.cymate-light-theme .table {
+    background: var(--light-glass-bg) !important;
+    color: var(--light-text) !important;
+}
+
+body.cymate-light-theme .table td {
+    background: rgba(255, 255, 255, 0.5) !important;
+    border: 1px solid var(--light-glass-border) !important;
+    color: var(--light-text) !important;
+}
+
+body.cymate-light-theme .main-sidebar {
+    background: linear-gradient(180deg, 
+        rgba(151, 71, 255, 0.8) 0%, 
+        rgba(124, 58, 237, 0.9) 100%) !important;
+}
+
+body.cymate-light-theme .sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+body.cymate-light-theme .form-control {
+    background: var(--light-glass-bg) !important;
+    border: 1px solid var(--light-glass-border) !important;
+    color: var(--light-text) !important;
+}
+
+body.cymate-light-theme .dashboard .module {
+    background: var(--light-glass-bg) !important;
+    border: 1px solid var(--light-glass-border) !important;
+    color: var(--light-text) !important;
+}
+
+body.cymate-light-theme #changelist {
+    background: var(--light-glass-bg) !important;
+    color: var(--light-text) !important;
+}
+
+/* ============================================
+   🔧 LIGHT THEME TEXT VISIBILITY FIXES
+   ============================================ */
+
+/* General text elements */
+body.cymate-light-theme,
+body.cymate-light-theme h1,
+body.cymate-light-theme h2,
+body.cymate-light-theme h3,
+body.cymate-light-theme h4,
+body.cymate-light-theme h5,
+body.cymate-light-theme h6,
+body.cymate-light-theme p,
+body.cymate-light-theme span,
+body.cymate-light-theme div,
+body.cymate-light-theme label,
+body.cymate-light-theme td,
+body.cymate-light-theme th,
+body.cymate-light-theme li {
+    color: var(--light-text) !important;
+}
+
+/* Form elements in light theme */
+body.cymate-light-theme .form-control,
+body.cymate-light-theme input,
+body.cymate-light-theme textarea,
+body.cymate-light-theme select {
+    color: var(--light-text) !important;
+}
+
+/* Links and action buttons in light theme */
+body.cymate-light-theme .object-tools a,
+body.cymate-light-theme .addlink,
+body.cymate-light-theme .changelink,
+body.cymate-light-theme .deletelink {
+    color: white !important;
+}
+
+/* Ensure all buttons have white text in light theme for visibility */
+body.cymate-light-theme .button,
+body.cymate-light-theme .default,
+body.cymate-light-theme input[type="submit"],
+body.cymate-light-theme input[type="button"],
+body.cymate-light-theme input[type="reset"],
+body.cymate-light-theme .submit-row input,
+body.cymate-light-theme .btn-primary,
+body.cymate-light-theme .btn,
+body.cymate-light-theme .btn-secondary,
+body.cymate-light-theme .btn-success,
+body.cymate-light-theme .btn-info,
+body.cymate-light-theme .btn-warning,
+body.cymate-light-theme .btn-danger,
+body.cymate-light-theme .btn-light,
+body.cymate-light-theme .btn-dark,
+body.cymate-light-theme .btn-link,
+body.cymate-light-theme a.button,
+body.cymate-light-theme .submit-link,
+body.cymate-light-theme .cancel-link,
+body.cymate-light-theme .grp-button,
+body.cymate-light-theme .related-widget-wrapper-link,
+body.cymate-light-theme .add-another,
+body.cymate-light-theme .delete-related,
+body.cymate-light-theme .viewlink,
+body.cymate-light-theme .historylink,
+body.cymate-light-theme .actions .button,
+body.cymate-light-theme .actions input[type="submit"],
+body.cymate-light-theme .submit-row .default,
+body.cymate-light-theme .submit-row input[value="Save"],
+body.cymate-light-theme .submit-row input[value="Save and continue editing"],
+body.cymate-light-theme .submit-row input[value="Save and add another"],
+body.cymate-light-theme .submit-row input[value="Yes, I'm sure"],
+body.cymate-light-theme .deletelink-box input,
+body.cymate-light-theme .submit-row a.deletelink,
+body.cymate-light-theme .submit-row a.closelink {
+    color: white !important;
+}
+
+/* Ensure button hover states also have white text in light theme */
+body.cymate-light-theme .button:hover,
+body.cymate-light-theme .default:hover,
+body.cymate-light-theme input[type="submit"]:hover,
+body.cymate-light-theme input[type="button"]:hover,
+body.cymate-light-theme input[type="reset"]:hover,
+body.cymate-light-theme .btn:hover,
+body.cymate-light-theme .btn-primary:hover,
+body.cymate-light-theme .btn-secondary:hover,
+body.cymate-light-theme .btn-success:hover,
+body.cymate-light-theme .btn-info:hover,
+body.cymate-light-theme .btn-warning:hover,
+body.cymate-light-theme .btn-danger:hover,
+body.cymate-light-theme .btn-light:hover,
+body.cymate-light-theme .btn-dark:hover,
+body.cymate-light-theme .btn-link:hover,
+body.cymate-light-theme .addlink:hover,
+body.cymate-light-theme .changelink:hover,
+body.cymate-light-theme .deletelink:hover,
+body.cymate-light-theme .viewlink:hover,
+body.cymate-light-theme .historylink:hover,
+body.cymate-light-theme .object-tools a:hover,
+body.cymate-light-theme .submit-row a.deletelink:hover,
+body.cymate-light-theme .submit-row a.closelink:hover {
+    color: white !important;
+}
+
+/* Ensure button focus states also have white text in light theme for accessibility */
+body.cymate-light-theme .button:focus,
+body.cymate-light-theme .default:focus,
+body.cymate-light-theme input[type="submit"]:focus,
+body.cymate-light-theme input[type="button"]:focus,
+body.cymate-light-theme input[type="reset"]:focus,
+body.cymate-light-theme .btn:focus,
+body.cymate-light-theme .btn-primary:focus,
+body.cymate-light-theme .addlink:focus,
+body.cymate-light-theme .changelink:focus,
+body.cymate-light-theme .deletelink:focus,
+body.cymate-light-theme .viewlink:focus,
+body.cymate-light-theme .historylink:focus,
+body.cymate-light-theme .object-tools a:focus {
+    color: white !important;
+}
+
+/* ============================================
+   🔧 SPECIFIC SAVE BUTTON FIX FOR LIGHT THEME
+   ============================================ */
+
+/* Extra specific selectors for Save buttons in light theme */
+body.cymate-light-theme .submit-row .default,
+body.cymate-light-theme .submit-row input[type="submit"],
+body.cymate-light-theme .submit-row input[value="Save"],
+body.cymate-light-theme .submit-row input[value="Save and continue editing"],
+body.cymate-light-theme .submit-row input[value="Save and add another"],
+body.cymate-light-theme .submit-row input[value="Save and add another "],
+body.cymate-light-theme .submit-row input[name="_save"],
+body.cymate-light-theme .submit-row input[name="_continue"],
+body.cymate-light-theme .submit-row input[name="_addanother"] {
+    color: white !important;
+    background: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    border: 1px solid var(--cymate-purple) !important;
+}
+
+/* Hover and focus states for Save buttons in light theme */
+body.cymate-light-theme .submit-row .default:hover,
+body.cymate-light-theme .submit-row input[type="submit"]:hover,
+body.cymate-light-theme .submit-row input[value="Save"]:hover,
+body.cymate-light-theme .submit-row input[value="Save and continue editing"]:hover,
+body.cymate-light-theme .submit-row input[value="Save and add another"]:hover,
+body.cymate-light-theme .submit-row .default:focus,
+body.cymate-light-theme .submit-row input[type="submit"]:focus,
+body.cymate-light-theme .submit-row input[value="Save"]:focus,
+body.cymate-light-theme .submit-row input[value="Save and continue editing"]:focus,
+body.cymate-light-theme .submit-row input[value="Save and add another"]:focus {
+    color: white !important;
+}
+
+/* ULTIMATE BUTTON TEXT FIX - Maximum specificity for Django admin buttons */
+body.cymate-light-theme.cymate-light-theme .submit-row input[type="submit"],
+body.cymate-light-theme.cymate-light-theme .submit-row .default,
+body.cymate-light-theme.cymate-light-theme .button,
+body.cymate-light-theme.cymate-light-theme input[type="submit"],
+body.cymate-light-theme.cymate-light-theme input[type="button"],
+body.cymate-light-theme.cymate-light-theme a.button {
+    color: white !important;
+    text-shadow: none !important;
+}
+
+/* ============================================
+   🎯 COMPREHENSIVE BUTTON FIX FOR ALL AREAS
+   ============================================ */
+
+/* Target ALL possible button containers and variations in light theme */
+body.cymate-light-theme #content-related input[type="submit"],
+body.cymate-light-theme #content-related .button,
+body.cymate-light-theme #content-related .default,
+body.cymate-light-theme .sidebar input[type="submit"],
+body.cymate-light-theme .sidebar .button,
+body.cymate-light-theme .sidebar .default,
+body.cymate-light-theme .form-row input[type="submit"],
+body.cymate-light-theme .form-row .button,
+body.cymate-light-theme .form-row .default,
+body.cymate-light-theme .content input[type="submit"],
+body.cymate-light-theme .content .button,
+body.cymate-light-theme .content .default,
+body.cymate-light-theme .main input[type="submit"],
+body.cymate-light-theme .main .button,
+body.cymate-light-theme .main .default,
+body.cymate-light-theme .colSM input[type="submit"],
+body.cymate-light-theme .colSM .button,
+body.cymate-light-theme .colSM .default,
+body.cymate-light-theme input[value*="SAVE"],
+body.cymate-light-theme input[value*="Save"],
+body.cymate-light-theme input[value*="save"],
+body.cymate-light-theme input[value*="CONTINUE"],
+body.cymate-light-theme input[value*="Continue"],
+body.cymate-light-theme input[value*="continue"],
+body.cymate-light-theme input[value*="ADD"],
+body.cymate-light-theme input[value*="Add"],
+body.cymate-light-theme input[value*="add"],
+body.cymate-light-theme input[value*="ANOTHER"],
+body.cymate-light-theme input[value*="Another"],
+body.cymate-light-theme input[value*="another"],
+body.cymate-light-theme input[value*="EDITING"],
+body.cymate-light-theme input[value*="Editing"],
+body.cymate-light-theme input[value*="editing"] {
+    color: white !important;
+    background: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    border: 1px solid var(--cymate-purple) !important;
+    text-shadow: none !important;
+    font-weight: 500 !important;
+}
+
+/* Force white text on ALL buttons regardless of location */
+body.cymate-light-theme * input[type="submit"],
+body.cymate-light-theme * input[type="button"],
+body.cymate-light-theme * .button,
+body.cymate-light-theme * .default {
+    color: white !important;
+}
+
+/* ============================================
+   🗑️ DELETE BUTTON SPECIFIC STYLING FIX
+   ============================================ */
+
+/* Target DELETE buttons specifically in light theme */
+body.cymate-light-theme .deletelink,
+body.cymate-light-theme a.deletelink,
+body.cymate-light-theme input[value*="Delete"],
+body.cymate-light-theme input[value*="DELETE"],
+body.cymate-light-theme input[value*="delete"],
+body.cymate-light-theme input[name*="delete"],
+body.cymate-light-theme .delete-button,
+body.cymate-light-theme .btn-danger,
+body.cymate-light-theme #content-related .deletelink,
+body.cymate-light-theme .sidebar .deletelink,
+body.cymate-light-theme .submit-row .deletelink,
+body.cymate-light-theme .object-tools .deletelink {
+    color: white !important;
+    background: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    border: 1px solid var(--cymate-purple) !important;
+    text-shadow: none !important;
+    font-weight: 500 !important;
+}
+
+/* Delete button hover and focus states */
+body.cymate-light-theme .deletelink:hover,
+body.cymate-light-theme a.deletelink:hover,
+body.cymate-light-theme .deletelink:focus,
+body.cymate-light-theme a.deletelink:focus,
+body.cymate-light-theme input[value*="Delete"]:hover,
+body.cymate-light-theme input[value*="Delete"]:focus {
+    color: white !important;
+    background: linear-gradient(135deg, var(--cymate-purple-dark), #6b21a8) !important;
+    text-decoration: none !important;
+}
+
+/* ============================================
+   📚 HISTORY BUTTON SPECIFIC STYLING FIX
+   ============================================ */
+
+/* Target HISTORY buttons specifically in both themes */
+body.cymate-light-theme .historylink,
+body.cymate-light-theme a.historylink,
+body.cymate-light-theme input[value*="History"],
+body.cymate-light-theme input[value*="HISTORY"],
+body.cymate-light-theme input[value*="history"],
+body.cymate-light-theme input[name*="history"],
+body.cymate-light-theme .history-button,
+body.cymate-light-theme #content-related .historylink,
+body.cymate-light-theme .sidebar .historylink {
+    color: white !important;
+    background: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    border: 1px solid var(--cymate-purple) !important;
+    text-shadow: none !important;
+    font-weight: 500 !important;
+}
+
+/* HISTORY button in dark theme */
+body.cymate-dark-theme .historylink,
+body.cymate-dark-theme a.historylink,
+body.cymate-dark-theme input[value*="History"],
+body.cymate-dark-theme input[value*="HISTORY"],
+body.cymate-dark-theme input[value*="history"],
+body.cymate-dark-theme input[name*="history"],
+body.cymate-dark-theme .history-button,
+body.cymate-dark-theme #content-related .historylink,
+body.cymate-dark-theme .sidebar .historylink {
+    color: white !important;
+    background: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    border: 1px solid var(--cymate-purple) !important;
+    text-shadow: none !important;
+    font-weight: 500 !important;
+}
+
+/* ============================================
+   🎯 NUCLEAR OPTION - MAXIMUM SPECIFICITY FIX
+   ============================================ */
+
+/* Ultra-specific selectors for DELETE and HISTORY buttons */
+body.cymate-light-theme #content-related input[type="submit"][value*="Delete"],
+body.cymate-light-theme #content-related input[type="button"][value*="Delete"],
+body.cymate-light-theme #content-related a[href*="delete"],
+body.cymate-light-theme #content-related input[type="submit"][value*="History"],
+body.cymate-light-theme #content-related input[type="button"][value*="History"],
+body.cymate-light-theme #content-related a[href*="history"],
+body.cymate-light-theme .sidebar input[type="submit"][value*="Delete"],
+body.cymate-light-theme .sidebar input[type="button"][value*="Delete"],
+body.cymate-light-theme .sidebar a[href*="delete"],
+body.cymate-light-theme .sidebar input[type="submit"][value*="History"],
+body.cymate-light-theme .sidebar input[type="button"][value*="History"],
+body.cymate-light-theme .sidebar a[href*="history"] {
+    color: white !important;
+    background: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    border: 1px solid var(--cymate-purple) !important;
+    text-shadow: none !important;
+    font-weight: 500 !important;
+}
+
+/* Same for dark theme */
+body.cymate-dark-theme #content-related input[type="submit"][value*="Delete"],
+body.cymate-dark-theme #content-related input[type="button"][value*="Delete"],
+body.cymate-dark-theme #content-related a[href*="delete"],
+body.cymate-dark-theme #content-related input[type="submit"][value*="History"],
+body.cymate-dark-theme #content-related input[type="button"][value*="History"],
+body.cymate-dark-theme #content-related a[href*="history"],
+body.cymate-dark-theme .sidebar input[type="submit"][value*="Delete"],
+body.cymate-dark-theme .sidebar input[type="button"][value*="Delete"],
+body.cymate-dark-theme .sidebar a[href*="delete"],
+body.cymate-dark-theme .sidebar input[type="submit"][value*="History"],
+body.cymate-dark-theme .sidebar input[type="button"][value*="History"],
+body.cymate-dark-theme .sidebar a[href*="history"] {
+    color: white !important;
+    background: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    border: 1px solid var(--cymate-purple) !important;
+    text-shadow: none !important;
+    font-weight: 500 !important;
+}
+
+/* ============================================
+   🚨 ULTIMATE DELETE BUTTON FIX - USERS ADMIN
+   ============================================ */
+
+/* Maximum specificity selectors for DELETE buttons - targeting every possible variation */
+body.cymate-light-theme.cymate-light-theme .deletelink,
+body.cymate-light-theme.cymate-light-theme a.deletelink,
+body.cymate-light-theme.cymate-light-theme input.deletelink,
+body.cymate-light-theme.cymate-light-theme button.deletelink,
+body.cymate-light-theme.cymate-light-theme .object-tools .deletelink,
+body.cymate-light-theme.cymate-light-theme #content-related .deletelink,
+body.cymate-light-theme.cymate-light-theme .sidebar .deletelink,
+body.cymate-light-theme.cymate-light-theme .submit-row .deletelink,
+body.cymate-light-theme.cymate-light-theme .content .deletelink,
+body.cymate-light-theme.cymate-light-theme .main .deletelink,
+body.cymate-light-theme.cymate-light-theme .colSM .deletelink,
+body.cymate-light-theme.cymate-light-theme a[href*="delete"],
+body.cymate-light-theme.cymate-light-theme a[href*="Delete"],
+body.cymate-light-theme.cymate-light-theme a[href*="DELETE"],
+body.cymate-light-theme.cymate-light-theme input[value="Delete"],
+body.cymate-light-theme.cymate-light-theme input[value="DELETE"],
+body.cymate-light-theme.cymate-light-theme input[value="delete"],
+body.cymate-light-theme.cymate-light-theme button[value="Delete"],
+body.cymate-light-theme.cymate-light-theme button[value="DELETE"],
+body.cymate-light-theme.cymate-light-theme button[value="delete"],
+body.cymate-light-theme.cymate-light-theme input[name="delete"],
+body.cymate-light-theme.cymate-light-theme input[name="Delete"],
+body.cymate-light-theme.cymate-light-theme button[name="delete"],
+body.cymate-light-theme.cymate-light-theme button[name="Delete"],
+body.cymate-light-theme.cymate-light-theme .btn-danger,
+body.cymate-light-theme.cymate-light-theme .delete-button,
+body.cymate-light-theme.cymate-light-theme .action-delete,
+body.cymate-light-theme.cymate-light-theme .delete-link {
+    color: white !important;
+    background: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    background-color: var(--cymate-purple) !important;
+    border: 1px solid var(--cymate-purple) !important;
+    text-shadow: none !important;
+    font-weight: 500 !important;
+    box-shadow: none !important;
+}
+
+/* Force delete button styling with even higher specificity */
+body.cymate-light-theme.cymate-light-theme.cymate-light-theme .deletelink,
+body.cymate-light-theme.cymate-light-theme.cymate-light-theme a.deletelink,
+body.cymate-light-theme.cymate-light-theme.cymate-light-theme input.deletelink,
+body.cymate-light-theme.cymate-light-theme.cymate-light-theme button.deletelink {
+    color: white !important;
+    background: var(--cymate-purple) !important;
+    background-color: var(--cymate-purple) !important;
+    background-image: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    border: 1px solid var(--cymate-purple) !important;
+    border-color: var(--cymate-purple) !important;
+    text-shadow: none !important;
+    font-weight: 500 !important;
+    box-shadow: none !important;
+}
+
+/* Override any Django admin delete button specific styles */
+body.cymate-light-theme .object-tools a.deletelink:link,
+body.cymate-light-theme .object-tools a.deletelink:visited,
+body.cymate-light-theme .object-tools a.deletelink:hover,
+body.cymate-light-theme .object-tools a.deletelink:active,
+body.cymate-light-theme .object-tools a.deletelink:focus,
+body.cymate-light-theme .submit-row a.deletelink:link,
+body.cymate-light-theme .submit-row a.deletelink:visited,
+body.cymate-light-theme .submit-row a.deletelink:hover,
+body.cymate-light-theme .submit-row a.deletelink:active,
+body.cymate-light-theme .submit-row a.deletelink:focus,
+body.cymate-light-theme #content-related a.deletelink:link,
+body.cymate-light-theme #content-related a.deletelink:visited,
+body.cymate-light-theme #content-related a.deletelink:hover,
+body.cymate-light-theme #content-related a.deletelink:active,
+body.cymate-light-theme #content-related a.deletelink:focus {
+    color: white !important;
+    background: var(--cymate-purple) !important;
+    background-color: var(--cymate-purple) !important;
+    background-image: linear-gradient(135deg, var(--cymate-purple), #7c3aed) !important;
+    border: 1px solid var(--cymate-purple) !important;
+    text-decoration: none !important;
+    text-shadow: none !important;
+    font-weight: 500 !important;
+    box-shadow: none !important;
+}
+
+/* Table elements in light theme */
+body.cymate-light-theme .table td,
+body.cymate-light-theme .table tbody td {
+    color: var(--light-text) !important;
+}
+
+body.cymate-light-theme .table th,
+body.cymate-light-theme .table thead th {
+    color: white !important;
+}
+
+/* Navigation in light theme */
+body.cymate-light-theme .breadcrumb,
+body.cymate-light-theme .breadcrumb a {
+    color: var(--light-text) !important;
+}
+
+/* Dashboard widgets in light theme */
+body.cymate-light-theme .small-box .inner h3,
+body.cymate-light-theme .small-box .inner p {
+    color: var(--cymate-purple) !important;
+    font-weight: 600 !important;
+}
+
+/* Placeholders in light theme */
+body.cymate-light-theme .form-control::placeholder,
+body.cymate-light-theme input::placeholder,
+body.cymate-light-theme textarea::placeholder {
+    color: rgba(51, 51, 51, 0.6) !important;
+}
+
+/* Dark Theme Styles */
+body.cymate-dark-theme {
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%) !important;
+    color: var(--dark-text) !important;
+}
+
+body.cymate-dark-theme .content-wrapper {
+    background: linear-gradient(135deg, 
+        rgba(151, 71, 255, 0.1) 0%, 
+        rgba(30, 30, 40, 0.8) 100%) !important;
+}
+
+body.cymate-dark-theme .card, 
+body.cymate-dark-theme .box, 
+body.cymate-dark-theme .info-box, 
+body.cymate-dark-theme .small-box {
+    background: var(--dark-glass-bg) !important;
+    border: 1px solid var(--dark-glass-border) !important;
+    color: var(--dark-text) !important;
+}
+
+body.cymate-dark-theme .table {
+    background: var(--dark-glass-bg) !important;
+    color: var(--dark-text) !important;
+}
+
+body.cymate-dark-theme .table td {
+    background: rgba(30, 30, 40, 0.5) !important;
+    border: 1px solid var(--dark-glass-border) !important;
+    color: var(--dark-text) !important;
+}
+
+body.cymate-dark-theme .main-sidebar {
+    background: linear-gradient(180deg, 
+        rgba(151, 71, 255, 0.9) 0%, 
+        rgba(15, 15, 35, 0.95) 100%) !important;
+}
+
+body.cymate-dark-theme .form-control {
+    background: var(--dark-glass-bg) !important;
+    border: 1px solid var(--dark-glass-border) !important;
+    color: var(--dark-text) !important;
+}
+
+body.cymate-dark-theme .dashboard .module {
+    background: var(--dark-glass-bg) !important;
+    border: 1px solid var(--dark-glass-border) !important;
+    color: var(--dark-text) !important;
+}
+
+body.cymate-dark-theme #changelist {
+    background: var(--dark-glass-bg) !important;
+    color: var(--dark-text) !important;
+}
+
+/* User menu and dropdown links */
+body.cymate-dark-theme .user-menu a,
+body.cymate-dark-theme .dropdown-menu a,
+body.cymate-dark-theme .navbar-nav .dropdown-menu a {
+    color: var(--dark-text) !important;
+    background: var(--dark-glass-bg) !important;
+}
+
+body.cymate-dark-theme .user-menu a:hover,
+body.cymate-dark-theme .dropdown-menu a:hover,
+body.cymate-dark-theme .navbar-nav .dropdown-menu a:hover {
+    color: white !important;
+    background: var(--cymate-purple) !important;
+}
+
+body.cymate-light-theme .user-menu a,
+body.cymate-light-theme .dropdown-menu a,
+body.cymate-light-theme .navbar-nav .dropdown-menu a {
+    color: var(--light-text) !important;
+    background: var(--light-glass-bg) !important;
+}
+
+body.cymate-light-theme .user-menu a:hover,
+body.cymate-light-theme .dropdown-menu a:hover,
+body.cymate-light-theme .navbar-nav .dropdown-menu a:hover {
+    color: white !important;
+    background: var(--cymate-purple) !important;
+}
+
+/* ============================================
+   🔧 DARK THEME TEXT VISIBILITY FIXES
+   ============================================ */
+
+/* General text elements */
+body.cymate-dark-theme,
+body.cymate-dark-theme h1,
+body.cymate-dark-theme h2,
+body.cymate-dark-theme h3,
+body.cymate-dark-theme h4,
+body.cymate-dark-theme h5,
+body.cymate-dark-theme h6,
+body.cymate-dark-theme p,
+body.cymate-dark-theme span,
+body.cymate-dark-theme div,
+body.cymate-dark-theme label,
+body.cymate-dark-theme td,
+body.cymate-dark-theme th,
+body.cymate-dark-theme li,
+body.cymate-dark-theme .text-muted {
+    color: var(--dark-text) !important;
+}
+
+/* Django admin specific text elements */
+body.cymate-dark-theme .object-tools a,
+body.cymate-dark-theme .object-tools input,
+body.cymate-dark-theme .addlink,
+body.cymate-dark-theme .changelink,
+body.cymate-dark-theme .deletelink {
+    color: var(--cymate-purple) !important;
+}
+
+body.cymate-dark-theme .breadcrumb a,
+body.cymate-dark-theme .breadcrumb {
+    color: var(--dark-text) !important;
+}
+
+/* Form labels and help text */
+body.cymate-dark-theme .form-row label,
+body.cymate-dark-theme .form-group label,
+body.cymate-dark-theme .help,
+body.cymate-dark-theme .helptext {
+    color: var(--dark-text) !important;
+}
+
+/* Table headers and data */
+body.cymate-dark-theme .table th,
+body.cymate-dark-theme .table thead th,
+body.cymate-dark-theme .table-striped tbody tr:nth-of-type(odd) td {
+    color: white !important;
+}
+
+body.cymate-dark-theme .table td,
+body.cymate-dark-theme .table tbody td {
+    color: var(--dark-text) !important;
+}
+
+/* Navigation and menu items */
+body.cymate-dark-theme .nav-link,
+body.cymate-dark-theme .navbar-nav .nav-link,
+body.cymate-dark-theme .dropdown-item {
+    color: var(--dark-text) !important;
+}
+
+/* Action buttons and links */
+body.cymate-dark-theme .btn,
+body.cymate-dark-theme .btn-link,
+body.cymate-dark-theme a {
+    color: var(--dark-text) !important;
+}
+
+body.cymate-dark-theme .btn-primary {
+    color: white !important;
+}
+
+/* Error and success messages */
+body.cymate-dark-theme .alert,
+body.cymate-dark-theme .errorlist,
+body.cymate-dark-theme .success,
+body.cymate-dark-theme .error {
+    color: var(--dark-text) !important;
+}
+
+/* Pagination */
+body.cymate-dark-theme .pagination .page-link {
+    color: var(--cymate-purple) !important;
+}
+
+body.cymate-dark-theme .pagination .page-item.active .page-link {
+    color: white !important;
+}
+
+/* Dashboard widgets */
+body.cymate-dark-theme .small-box .inner h3,
+body.cymate-dark-theme .small-box .inner p,
+body.cymate-dark-theme .info-box-text,
+body.cymate-dark-theme .info-box-number {
+    color: var(--dark-text) !important;
+}
+
+/* Module captions */
+body.cymate-dark-theme .module caption {
+    color: white !important;
+}
+
+/* Fieldset legends */
+body.cymate-dark-theme fieldset legend,
+body.cymate-dark-theme .module h2 {
+    color: var(--dark-text) !important;
+}
+
+/* Input placeholders */
+body.cymate-dark-theme .form-control::placeholder,
+body.cymate-dark-theme input::placeholder,
+body.cymate-dark-theme textarea::placeholder {
+    color: rgba(229, 229, 229, 0.6) !important;
+}
+
+/* Select options */
+body.cymate-dark-theme select option {
+    background: var(--dark-glass-bg) !important;
+    color: var(--dark-text) !important;
+}
+
+/* Jazzmin specific elements */
+body.cymate-dark-theme .brand-text,
+body.cymate-dark-theme .content-header h1,
+body.cymate-dark-theme .card-title,
+body.cymate-dark-theme .card-text {
+    color: var(--dark-text) !important;
+}
+
+/* ============================================
+   🎯 ADDITIONAL ADMIN ELEMENT FIXES
+   ============================================ */
+
+/* Universal text color fixes for both themes */
+.cymate-dark-theme .result_list td,
+.cymate-dark-theme .results td,
+.cymate-dark-theme .changelist-search input,
+.cymate-dark-theme .changelist-filter li a,
+.cymate-dark-theme .changelist-filter h3,
+.cymate-dark-theme .module h2,
+.cymate-dark-theme .module caption,
+.cymate-dark-theme .dashboard .module table caption,
+.cymate-dark-theme .submit-row input,
+.cymate-dark-theme .button,
+.cymate-dark-theme .default {
+    color: var(--dark-text) !important;
+}
+
+.cymate-light-theme .result_list td,
+.cymate-light-theme .results td,
+.cymate-light-theme .changelist-search input,
+.cymate-light-theme .changelist-filter li a,
+.cymate-light-theme .changelist-filter h3,
+.cymate-light-theme .module h2,
+.cymate-light-theme .submit-row input,
+.cymate-light-theme .button,
+.cymate-light-theme .default {
+    color: var(--light-text) !important;
+}
+
+/* Action checkboxes and controls */
+.cymate-dark-theme .action-checkbox-column input,
+.cymate-dark-theme .action-select,
+.cymate-dark-theme .action-counter,
+.cymate-dark-theme .actions span {
+    color: var(--dark-text) !important;
+}
+
+.cymate-light-theme .action-checkbox-column input,
+.cymate-light-theme .action-select,
+.cymate-light-theme .action-counter,
+.cymate-light-theme .actions span {
+    color: var(--light-text) !important;
+}
+
+/* Filter sidebar */
+.cymate-dark-theme #changelist-filter {
+    background: var(--dark-glass-bg) !important;
+    color: var(--dark-text) !important;
+    border: 1px solid var(--dark-glass-border) !important;
+}
+
+.cymate-light-theme #changelist-filter {
+    background: var(--light-glass-bg) !important;
+    color: var(--light-text) !important;
+    border: 1px solid var(--light-glass-border) !important;
+}
+
+/* Search box */
+.cymate-dark-theme #toolbar {
+    background: var(--dark-glass-bg) !important;
+    color: var(--dark-text) !important;
+}
+
+.cymate-light-theme #toolbar {
+    background: var(--light-glass-bg) !important;
+    color: var(--light-text) !important;
+}
+
+/* Date/time widgets */
+.cymate-dark-theme .datetimeshortcuts a,
+.cymate-dark-theme .timezonewarning,
+.cymate-dark-theme .calendarbox,
+.cymate-dark-theme .clockbox {
+    color: var(--dark-text) !important;
+    background: var(--dark-glass-bg) !important;
+}
+
+.cymate-light-theme .datetimeshortcuts a,
+.cymate-light-theme .timezonewarning,
+.cymate-light-theme .calendarbox,
+.cymate-light-theme .clockbox {
+    color: var(--light-text) !important;
+    background: var(--light-glass-bg) !important;
+}
+
+/* Inline forms */
+.cymate-dark-theme .inline-group,
+.cymate-dark-theme .tabular,
+.cymate-dark-theme .inline-related h3 {
+    color: var(--dark-text) !important;
+}
+
+.cymate-light-theme .inline-group,
+.cymate-light-theme .tabular,
+.cymate-light-theme .inline-related h3 {
+    color: var(--light-text) !important;
+}
+
+/* Error messages */
+.cymate-dark-theme .errorlist li,
+.cymate-dark-theme .error,
+.cymate-dark-theme .errornote {
+    color: #ff6b6b !important;
+    background: rgba(255, 107, 107, 0.1) !important;
+}
+
+.cymate-light-theme .errorlist li,
+.cymate-light-theme .error,
+.cymate-light-theme .errornote {
+    color: #dc3545 !important;
+    background: rgba(220, 53, 69, 0.1) !important;
+}
+
+/* Success messages */
+.cymate-dark-theme .success,
+.cymate-dark-theme .messagelist .success {
+    color: #51cf66 !important;
+    background: rgba(81, 207, 102, 0.1) !important;
+}
+
+.cymate-light-theme .success,
+.cymate-light-theme .messagelist .success {
+    color: #28a745 !important;
+    background: rgba(40, 167, 69, 0.1) !important;
+}
+
+/* Info/warning messages */
+.cymate-dark-theme .info,
+.cymate-dark-theme .messagelist .info {
+    color: #74c0fc !important;
+    background: rgba(116, 192, 252, 0.1) !important;
+}
+
+.cymate-light-theme .info,
+.cymate-light-theme .messagelist .info {
+    color: #17a2b8 !important;
+    background: rgba(23, 162, 184, 0.1) !important;
+}
+
+/* Theme Transition Animation */
+body, .content-wrapper, .card, .box, .table, .form-control, .main-sidebar {
+    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+} 

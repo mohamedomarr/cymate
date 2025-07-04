@@ -34,12 +34,13 @@ SECRET_KEY = 'django-insecure-oy_#gwuhu&#^k^2v^p-a_6sw0$jk%^ucz+-r0wr3+sbj@ibzv^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver', '*.ngrok.io']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',  # Must be before django.contrib.admin
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -214,6 +215,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL= '/media/'
 MEDIA_ROOT= BASE_DIR / "media"
 
@@ -230,4 +232,211 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:3002",
 ]
+
+# ========================================
+# JAZZMIN ADMIN INTERFACE CUSTOMIZATION
+# ========================================
+
+JAZZMIN_SETTINGS = {
+    # Title & Branding
+    "site_title": "CyMate Admin",
+    "site_header": "CyMate Admin Dashboard",
+    "site_brand": "CyMate",
+    "login_logo": "images/Logo.svg",  # Path to a logo for the login page
+    "login_logo_dark": "images/Logo.svg",  # Path to a logo for the login page (dark theme)
+    "site_logo": "images/black-Icon.svg",  # Logo for the top navbar
+    "site_icon": "images/CyMate-Icon.svg",  # Favicon path
+    "welcome_sign": "Welcome to CyMate Admin Dashboard",
+    "copyright": "CyMate - Cybersecurity Platform",
+    
+    # User model
+    "user_avatar": None,  # Field name on user model that contains avatar
+    
+    # Top navbar
+    "topmenu_links": [
+        # Navbar brand
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        
+        # External links
+        {"name": "CyMate Site", "url": "http://localhost:3000", "new_window": True},   
+    ],
+    
+    # User menu on the right side
+    "usermenu_links": [
+        {"name": "CyMate Frontend", "url": "http://localhost:3000", "new_window": True},
+        {"model": "auth.user"}
+    ],
+    
+    # Side menu
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "hide_apps": [],
+    "hide_models": [],
+    
+    # Menu ordering
+    "order_with_respect_to": ["auth", "blog"],
+    
+    # Custom menu items
+    "custom_links": {
+        "blog": [{
+            "name": "View Posts", 
+            "url": "/admin/blog/post/", 
+            "icon": "fas fa-blog",
+            "permissions": ["blog.view_post"]
+        }]
+    },
+    
+    # 🎨 Complete Icons Set for CyMate Admin
+    "icons": {
+        # ========================================
+        # 🔐 AUTHENTICATION & SECURITY
+        # ========================================
+        "auth": "fas fa-shield-alt",                    # 🛡️ Main auth app
+        "auth.user": "fas fa-user-shield",              # 🔐 System users
+        "auth.Group": "fas fa-users-cog",               # ⚙️ User groups
+        "auth.Permission": "fas fa-key",                # 🔑 Permissions
+        
+        # ========================================
+        # 👥 BLOG/COMMUNITY MODELS  
+        # ========================================
+        "blog": "fas fa-blog",                          # 📝 Main blog app
+        "blog.User": "fas fa-user-circle",              # 👤 Community users
+        "blog.Post": "fas fa-edit",                     # ✏️ Blog posts
+        "blog.Comment": "fas fa-comments",              # 💬 Comments
+        "blog.Profile": "fas fa-id-card-alt",           # 🆔 User profiles
+        "blog.Notification": "fas fa-bell",             # 🔔 Notifications
+        "blog.Reacts": "fas fa-heart",                  # ❤️ Reactions/likes
+        "blog.Share": "fas fa-share-nodes",             # 🔗 Share functionality
+        
+        # ========================================
+        # 🌐 SITE MANAGEMENT
+        # ========================================
+        "sites": "fas fa-globe-americas",               # 🌎 Sites framework
+        "sites.Site": "fas fa-server",                  # 🖥️ Site configurations
+        
+        # ========================================
+        # 📊 ADMIN & SYSTEM
+        # ========================================
+        "admin": "fas fa-cogs",                         # ⚙️ Admin interface
+        "admin.LogEntry": "fas fa-history",             # 📜 Admin logs
+        "contenttypes": "fas fa-database",              # 🗄️ Content types
+        "contenttypes.ContentType": "fas fa-layer-group", # 📋 Content type objects
+        "sessions": "fas fa-clock",                     # ⏰ User sessions
+        "sessions.Session": "fas fa-user-clock",        # 👤⏰ Session data
+        
+        # ========================================
+        # 🔗 API & AUTHENTICATION
+        # ========================================
+        "authtoken": "fas fa-lock",                     # 🔐 API tokens
+        "authtoken.token": "fas fa-passport",           # 🎫 Authentication tokens (fixed!)
+        "rest_framework": "fas fa-code",                # 💻 REST API
+        
+        # ========================================
+        # 📱 SOCIAL AUTHENTICATION (AllAuth)
+        # ========================================
+        "account": "fas fa-user-plus",                  # ➕ Account management
+        "socialaccount": "fas fa-share-alt",            # 🔗 Social accounts
+        "socialaccount.SocialAccount": "fas fa-users",  # 👥 Connected social accounts
+        "socialaccount.SocialApp": "fas fa-mobile-alt", # 📱 Social applications
+        "socialaccount.SocialToken": "fas fa-ticket-alt", # 🎟️ Social tokens
+        "account.EmailAddress": "fas fa-envelope-open", # 📧 Email addresses
+        "account.EmailConfirmation": "fas fa-envelope-circle-check", # ✅ Email confirmations
+        
+        # ========================================
+        # 🏷️ TAGGING SYSTEM
+        # ========================================
+        "taggit": "fas fa-tags",                        # 🏷️ Tag system
+        "taggit.Tag": "fas fa-tag",                     # 🏷️ Individual tags
+        "taggit.TaggedItem": "fas fa-bookmark",         # 🔖 Tagged content
+        
+        # ========================================
+        # 🌐 CORS & HEADERS
+        # ========================================
+        "corsheaders": "fas fa-globe-europe",           # 🌍 CORS configuration
+        
+        # ========================================
+        # 🔄 REST AUTH & REGISTRATION
+        # ========================================
+        "dj_rest_auth": "fas fa-user-lock",             # 🔐 REST authentication
+        "registration": "fas fa-user-edit",             # ✏️ User registration
+        
+        # ========================================
+        # 💻 MESSAGES & STATICFILES
+        # ========================================
+        "messages": "fas fa-envelope",                  # 📨 Django messages
+        "staticfiles": "fas fa-folder-open",            # 📁 Static files
+        
+        # ========================================
+        # 🔧 CUSTOM APP ICONS (if you add more apps)
+        # ========================================
+        # Add your future apps here with appropriate icons
+        # "your_app": "fas fa-icon-name",
+    },
+    
+    # Default model icons
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+    
+    # Related modal
+    "related_modal_active": False,
+    
+    # Custom CSS/JS for advanced color customization
+    "custom_css": "css/cymate-admin.css",  # Custom CSS file for glassmorphism theme
+    "custom_js": "js/theme-toggler.js",  # Custom JS file for theme toggling
+    
+    # Whether to show the UI customizer on the sidebar
+    "show_ui_builder": False,
+    
+    # Changelist format
+    "changeform_format": "horizontal_tabs",
+    "changeform_format_overrides": {
+        "auth.user": "collapsible", 
+        "auth.group": "vertical_tabs"
+    },
+    
+    # Language chooser
+    "language_chooser": False,
+}
+
+# UI Tweaks for Jazzmin - Glassmorphism Purple Theme
+JAZZMIN_UI_TWEAKS = {
+    # ============================================
+    # 🎨 GLASSMORPHISM PURPLE CYBERSECURITY THEME
+    # ============================================
+    
+    # Text sizes - Clean and modern
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    
+    # Theme colors (work with our custom CSS)
+    "brand_colour": "navbar-primary",
+    "accent": "accent-primary",
+    "navbar": "navbar-dark navbar-primary",
+    
+    # Sidebar configuration for glassmorphism
+    "sidebar_disable_expand": False,
+    "sidebar_nav_small_text": False,
+    "sidebar_nav_flat_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_compact_style": True,
+    "sidebar": "sidebar-dark-primary",
+    
+    # Modern dark theme base
+    "theme": "lux",  # Light base theme that works well with our custom CSS
+       
+    # Enhanced UI features
+    "actions_sticky_top": True,
+    
+    # Button styling (all purple with custom CSS)
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-primary",
+        "info": "btn-primary", 
+        "warning": "btn-primary",
+        "danger": "btn-primary",
+        "success": "btn-primary"
+    }
+}
 
